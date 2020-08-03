@@ -1,7 +1,5 @@
 package org.lanter.lan4gate.Implementation.Messages.Fields;
 
-import org.lanter.lan4gate.Messages.Fields.ResponseFieldsList;
-
 import java.util.HashMap;
 import java.util.Map;
 

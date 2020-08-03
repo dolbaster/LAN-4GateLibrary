@@ -1,7 +1,6 @@
 package org.lanter.lan4gate.Implementation.Messages.Responses;
 
-import org.lanter.lan4gate.IResponse;
-import org.lanter.lan4gate.Messages.Fields.*;
+import org.lanter.lan4gate.Messages.Response.*;
 import org.lanter.lan4gate.Messages.OperationsList;
 
 import java.util.*;

@@ -1,5 +1,7 @@
 package org.lanter.lan4gate;
 
+import org.lanter.lan4gate.Messages.Notification.INotification;
+
 /**
  * This interface provides callback for receive notification events from terminal.
  */

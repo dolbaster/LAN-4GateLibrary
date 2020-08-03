@@ -1,4 +1,4 @@
-package org.lanter.lan4gate.Messages.Fields;
+package org.lanter.lan4gate.Messages.Notification;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -3,12 +3,17 @@ package org.lanter.lan4gate;
 import org.lanter.lan4gate.Implementation.Communication.TCPCommunication;
 import org.lanter.lan4gate.Implementation.Communication.ICommunicationListener;
 import org.lanter.lan4gate.Implementation.Messages.Fields.ClassFieldValuesList;
+import org.lanter.lan4gate.MessageProcessor.Builder.IMessageBuilder;
+import org.lanter.lan4gate.MessageProcessor.Builder.MessageBuilderFactory;
+import org.lanter.lan4gate.Messages.Notification.INotification;
 import org.lanter.lan4gate.Messages.OperationsList;
-import org.lanter.lan4gate.Implementation.Messages.Requests.Assembler.JSONAssembler;
 import org.lanter.lan4gate.Implementation.Messages.Requests.Request;
-import org.lanter.lan4gate.Implementation.Messages.Requests.RequestBuilder;
-import org.lanter.lan4gate.Implementation.Messages.Responses.Parser.JSONParser;
+import org.lanter.lan4gate.MessageProcessor.Parser.JSONParser;
+import org.lanter.lan4gate.Messages.Request.IRequest;
+import org.lanter.lan4gate.Messages.Request.RequestFactory;
+import org.lanter.lan4gate.Messages.Response.IResponse;
 
+import java.nio.ByteBuffer;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -186,8 +191,7 @@ public class Lan4Gate implements ICommunicationListener {
      * @return Prepared object, implements {@link IRequest}
      */
     public IRequest getPreparedRequest(OperationsList operation) {
-        RequestBuilder builder = new RequestBuilder(mEcrNumber);
-        return builder.prepareRequest(operation);
+        return RequestFactory.getRequest(operation, mEcrNumber);
     }
 
     /**
@@ -196,10 +200,10 @@ public class Lan4Gate implements ICommunicationListener {
      * @param request Prepared object, implements {@link IRequest}
      */
     public void sendRequest(IRequest request){
-        JSONAssembler assembler = new JSONAssembler();
-        boolean result = assembler.assemble((Request) request);
-        if(result) {
-            mTCPCommunication.addSendData(assembler.getJson());
+        IMessageBuilder builder = MessageBuilderFactory.getBuilder();
+        ByteBuffer result = builder.buildMessage((Request) request);
+        if(result != null) {
+            mTCPCommunication.addSendData(result);
         }
     }
     @Override

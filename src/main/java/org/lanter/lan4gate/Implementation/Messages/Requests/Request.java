@@ -1,8 +1,8 @@
 package org.lanter.lan4gate.Implementation.Messages.Requests;
 
-import org.lanter.lan4gate.IRequest;
-import org.lanter.lan4gate.Messages.Fields.RequestFieldsList;
 import org.lanter.lan4gate.Messages.OperationsList;
+import org.lanter.lan4gate.Messages.Request.IRequest;
+import org.lanter.lan4gate.Messages.Request.RequestFieldsList;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -37,37 +37,45 @@ public class Request implements IRequest {
     protected final void addOptionalFields(RequestFieldsList field) {
         mOptionalFieldsList.add(field);
     }
-    public Request(){
+
+    protected Request(){
         addMandatoryFields(RequestFieldsList.EcrNumber);
         addMandatoryFields(RequestFieldsList.OperationCode);
     }
 
+    @Override
     public Set<RequestFieldsList> getMandatoryFields() {
         return mMandatoryFieldsList;
     }
 
+    @Override
     public Set<RequestFieldsList> getOptionalFields() {
         return mOptionalFieldsList;
     }
 
+    @Override
     public boolean checkMandatoryFields() {
         return mFields.containsAll(mMandatoryFieldsList);
     }
 
+    @Override
     public void setEcrNumber(int ecrNumber) {
         mFields.add(RequestFieldsList.EcrNumber);
         mEcrNumber = ecrNumber;
     }
 
+    @Override
     public int getEcrNumber() {
         return mEcrNumber;
     }
 
+    @Override
     public void setEcrMerchantNumber(int ecrMerchantNumber) {
         mFields.add(RequestFieldsList.EcrMerchantNumber);
         mEcrMerchantNumber = ecrMerchantNumber;
     }
 
+    @Override
     public int getEcrMerchantNumber() {
         return mEcrMerchantNumber;
     }
@@ -77,15 +85,18 @@ public class Request implements IRequest {
         mOperationCode = operationCode;
     }
 
+    @Override
     public OperationsList getOperationCode() {
         return mOperationCode;
     }
 
+    @Override
     public void setAmount(long amount) {
         mFields.add(RequestFieldsList.Amount);
         mAmount = amount;
     }
 
+    @Override
     public long getAmount() {
         return mAmount;
     }
@@ -96,49 +107,62 @@ public class Request implements IRequest {
         mPartialAmount = amount;
     }
 
+    @Override
     public long getPartialAmount() {
         return mPartialAmount;
     }
+
+    @Override
     public void setTipsAmount(long tipsAmount) {
         mFields.add(RequestFieldsList.TipsAmount);
         mTipsAmount = tipsAmount;
     }
 
+    @Override
     public long getTipsAmount() {
         return mTipsAmount;
     }
 
+    @Override
     public void setCashbackAmount(long cashbackAmount) {
         mFields.add(RequestFieldsList.CashbackAmount);
         mCashbackAmount = cashbackAmount;
     }
+
+    @Override
     public long getCashbackAmount() {
         return mCashbackAmount;
     }
 
+    @Override
     public void setCurrencyCode(int currencyCode) {
         mFields.add(RequestFieldsList.CurrencyCode);
         mCurrencyCode = currencyCode;
     }
 
+    @Override
     public int getCurrencyCode() {
         return mCurrencyCode;
     }
 
+    @Override
     public void setRRN(String RRN) {
         mFields.add(RequestFieldsList.RRN);
         this.mRRN = RRN;
     }
 
+    @Override
     public String getRRN() {
         return mRRN;
     }
 
+    @Override
     public void setReceiptReference(String receiptReference) {
         mFields.add(RequestFieldsList.ReceiptReference);
         mReceiptReference = receiptReference;
     }
 
+    @Override
     public String getReceiptReference() {
         return mReceiptReference;
     }

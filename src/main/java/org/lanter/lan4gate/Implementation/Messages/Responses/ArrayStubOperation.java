@@ -1,6 +1,6 @@
 package org.lanter.lan4gate.Implementation.Messages.Responses;
 
-import org.lanter.lan4gate.Messages.Fields.ResponseFieldsList;
+import org.lanter.lan4gate.Messages.Response.ResponseFieldsList;
 
 public class ArrayStubOperation extends Response {
     public ArrayStubOperation() {

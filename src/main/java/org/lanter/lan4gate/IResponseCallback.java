@@ -1,5 +1,7 @@
 package org.lanter.lan4gate;
 
+import org.lanter.lan4gate.Messages.Response.IResponse;
+
 /**
  * This interface provides callback for receive response from terminal.
  */

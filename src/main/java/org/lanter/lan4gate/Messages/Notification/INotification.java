@@ -1,6 +1,4 @@
-package org.lanter.lan4gate;
-
-import org.lanter.lan4gate.Messages.Fields.NotificationsList;
+package org.lanter.lan4gate.Messages.Notification;
 
 /**
  * This interface provide access for notification events from terminal.
@@ -17,12 +15,16 @@ public interface INotification {
      */
     NotificationsList getNotificationCode();
 
+    void setNotificationCode(NotificationsList code);
+
     /**
      * Return message text for display on screen. Additional info included
      *
      * @return the message
      */
     String getMessage();
+
+    void setMessage(String message);
 
     /**
      * Additional information of notification, such as try count for PIN input.
@@ -31,4 +33,6 @@ public interface INotification {
      * @return Test string with additional info
      */
     String getAdditionalInfo();
+
+    void setAdditionalInfo(String additionalInfo);
 }

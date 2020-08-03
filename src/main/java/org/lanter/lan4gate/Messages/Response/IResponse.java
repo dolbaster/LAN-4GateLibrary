@@ -1,6 +1,5 @@
-package org.lanter.lan4gate;
+package org.lanter.lan4gate.Messages.Response;
 
-import org.lanter.lan4gate.Messages.Fields.*;
 import org.lanter.lan4gate.Messages.OperationsList;
 
 import java.util.Map;

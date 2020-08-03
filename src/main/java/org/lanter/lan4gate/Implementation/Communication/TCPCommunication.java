@@ -50,8 +50,8 @@ public class TCPCommunication {
     public boolean isConnected() {
         return mRegisteredConnection != null;
     }
-    public void addSendData(String data) {
-        mDataForSend.add(StandardCharsets.UTF_8.encode(data));
+    public void addSendData(ByteBuffer data) {
+        mDataForSend.add(data);
     }
     public void startMonitoring()
     {
