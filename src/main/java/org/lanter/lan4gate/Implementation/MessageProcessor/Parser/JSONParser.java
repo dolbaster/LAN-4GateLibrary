@@ -1,7 +1,8 @@
-package org.lanter.lan4gate.MessageProcessor.Parser;
+package org.lanter.lan4gate.Implementation.MessageProcessor.Parser;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.lanter.lan4gate.MessageProcessor.Parser.IMessageParser;
 import org.lanter.lan4gate.Messages.Notification.NotificationsList;
 import org.lanter.lan4gate.Messages.Response.*;
 import org.lanter.lan4gate.Implementation.Messages.Fields.ClassFieldValuesList;
@@ -16,7 +17,7 @@ import org.lanter.lan4gate.Implementation.Messages.Responses.ResponseBuilder;
 import java.util.HashSet;
 import java.util.Set;
 
-class JSONParser implements IMessageParser {
+public class JSONParser implements IMessageParser {
     private Response mResponse;
     private Notification mNotification;
     private ClassFieldValuesList mType;

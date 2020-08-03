@@ -1,7 +1,10 @@
 package org.lanter.lan4gate.Messages.Request;
 
 import org.lanter.lan4gate.Messages.OperationsList;
+import org.lanter.lan4gate.Messages.Response.IResponse;
+import org.lanter.lan4gate.Messages.Response.ResponseFieldsList;
 
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -216,7 +219,11 @@ public interface IRequest {
     /**
      * Sets the list of EMV tags for Fast track operation, that must be returned to ECR in encrypted TLV view.
      *
-     * @param encTags The string formatted by next pattern: Every tag must be coded by 4 byte on text hex view.                For the example, tag DF82 looks like as 0000DF82 and tag 82 looks like 00000082.                Multiple tags writes as 0000DF8200000082.                This string may be begun from 0x prefix.                Case type may be any.
+     * @param encTags The string formatted by next pattern: Every tag must be coded by 4 byte on text hex view.
+     *                 For the example, tag DF82 looks like as 0000DF82 and tag 82 looks like 00000082.
+     *                 Multiple tags writes as 0000DF8200000082.
+     *                 This string may be begun from 0x prefix.
+     *                 Case type may be any.
      */
     void setEncTags(String encTags);
 
@@ -259,6 +266,22 @@ public interface IRequest {
      * @return The list of current fields
      */
     Set<RequestFieldsList> getCurrentFields();
+
+    /**
+     * Packed all received fields into string. Exclude all arrays.
+     * All enum in first transform into their storage type, such as String, int, etc. After writes into String
+     * To get arrays info, you must call this method on every array element.
+     * @return The map, contains pairs of {@link RequestFieldsList} and String-view of field
+     */
+    Map<RequestFieldsList, String> packAsString();
+
+    /**
+     * Packed all received fields into object.
+     * All fields writes into map as-is, cast to Object.
+     *
+     * @return the map, contains pairs of {@link RequestFieldsList} and casted to Object fields.
+     */
+    Map<RequestFieldsList, Object> packAsObject();
 
     /**
      * Validate mandatory fields for concrete operation. To get mandatory fields, see protocol documentation

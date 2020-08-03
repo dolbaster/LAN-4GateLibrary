@@ -5,10 +5,11 @@ import org.lanter.lan4gate.Implementation.Communication.ICommunicationListener;
 import org.lanter.lan4gate.Implementation.Messages.Fields.ClassFieldValuesList;
 import org.lanter.lan4gate.MessageProcessor.Builder.IMessageBuilder;
 import org.lanter.lan4gate.MessageProcessor.Builder.MessageBuilderFactory;
+import org.lanter.lan4gate.MessageProcessor.Parser.IMessageParser;
+import org.lanter.lan4gate.MessageProcessor.Parser.MessageParserFactory;
 import org.lanter.lan4gate.Messages.Notification.INotification;
 import org.lanter.lan4gate.Messages.OperationsList;
 import org.lanter.lan4gate.Implementation.Messages.Requests.Request;
-import org.lanter.lan4gate.MessageProcessor.Parser.JSONParser;
 import org.lanter.lan4gate.Messages.Request.IRequest;
 import org.lanter.lan4gate.Messages.Request.RequestFactory;
 import org.lanter.lan4gate.Messages.Response.IResponse;
@@ -208,7 +209,7 @@ public class Lan4Gate implements ICommunicationListener {
     }
     @Override
     public void newData(String data) {
-        JSONParser parser = new JSONParser();
+        IMessageParser parser = MessageParserFactory.getParser();
         if(parser.parse(data)) {
             if(parser.getType() == ClassFieldValuesList.Response) {
                 IResponse response = parser.getResponse();

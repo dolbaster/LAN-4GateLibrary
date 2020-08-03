@@ -3,8 +3,11 @@ package org.lanter.lan4gate.Implementation.Messages.Requests;
 import org.lanter.lan4gate.Messages.OperationsList;
 import org.lanter.lan4gate.Messages.Request.IRequest;
 import org.lanter.lan4gate.Messages.Request.RequestFieldsList;
+import org.lanter.lan4gate.Messages.Response.ResponseFieldsList;
 
+import java.util.EnumMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 public class Request implements IRequest {
@@ -232,5 +235,127 @@ public class Request implements IRequest {
 
     public Set<RequestFieldsList> getCurrentFields() {
         return mFields;
+    }
+
+    @Override
+    public Map<RequestFieldsList, String> packAsString() {
+        Map<RequestFieldsList, String> packedFields = new EnumMap<>(RequestFieldsList.class);
+        for(RequestFieldsList field : getCurrentFields()) {
+            switch (field) {
+                case EcrNumber:
+                    packedFields.put(RequestFieldsList.EcrNumber, String.valueOf(getEcrNumber()));
+                    break;
+                case EcrMerchantNumber:
+                    packedFields.put(field, String.valueOf(getEcrMerchantNumber()));
+                    break;
+                case OperationCode:
+                    packedFields.put(field, String.valueOf(getOperationCode().getNumber()));
+                    break;
+                case Amount:
+                    packedFields.put(field, String.valueOf(getAmount()));
+                    break;
+                case PartialAmount:
+                    packedFields.put(field, String.valueOf(getPartialAmount()));
+                    break;
+                case TipsAmount:
+                    packedFields.put(field, String.valueOf(getTipsAmount()));
+                    break;
+                case CashbackAmount:
+                    packedFields.put(field, String.valueOf(getCashbackAmount()));
+                    break;
+                case CurrencyCode:
+                    packedFields.put(field, String.valueOf(getCurrencyCode()));
+                    break;
+                case RRN:
+                    packedFields.put(field, getRRN());
+                    break;
+                case AuthCode:
+                    packedFields.put(field, getAuthCode());
+                    break;
+                case ReceiptReference:
+                    packedFields.put(field, getReceiptReference());
+                    break;
+                case TransactionID:
+                    packedFields.put(field, getTransactionID());
+                    break;
+                case CardDataEnc:
+                    packedFields.put(field, getCardDataEnc());
+                    break;
+                case OpenTags:
+                    packedFields.put(field, getOpenTags());
+                    break;
+                case EncTags:
+                    packedFields.put(field, getEncTags());
+                    break;
+                case ProviderCode:
+                    packedFields.put(field, getProviderCode());
+                    break;
+                case AdditionalInfo:
+                    packedFields.put(field, getAdditionalInfo());
+                    break;
+            }
+        }
+        return packedFields;
+    }
+
+    @Override
+    public Map<RequestFieldsList, Object> packAsObject() {
+        Map<RequestFieldsList, Object> packedFields = new EnumMap<>(RequestFieldsList.class);
+        for(RequestFieldsList field : getCurrentFields()) {
+            switch (field) {
+                case EcrNumber:
+                    packedFields.put(RequestFieldsList.EcrNumber, String.valueOf(getEcrNumber()));
+                    break;
+                case EcrMerchantNumber:
+                    packedFields.put(field, getEcrMerchantNumber());
+                    break;
+                case OperationCode:
+                    packedFields.put(field, getOperationCode().getNumber());
+                    break;
+                case Amount:
+                    packedFields.put(field, getAmount());
+                    break;
+                case PartialAmount:
+                    packedFields.put(field, getPartialAmount());
+                    break;
+                case TipsAmount:
+                    packedFields.put(field, getTipsAmount());
+                    break;
+                case CashbackAmount:
+                    packedFields.put(field, getCashbackAmount());
+                    break;
+                case CurrencyCode:
+                    packedFields.put(field, getCurrencyCode());
+                    break;
+                case RRN:
+                    packedFields.put(field, getRRN());
+                    break;
+                case AuthCode:
+                    packedFields.put(field, getAuthCode());
+                    break;
+                case ReceiptReference:
+                    packedFields.put(field, getReceiptReference());
+                    break;
+                case TransactionID:
+                    packedFields.put(field, getTransactionID());
+                    break;
+                case CardDataEnc:
+                    packedFields.put(field, getCardDataEnc());
+                    break;
+                case OpenTags:
+                    packedFields.put(field, getOpenTags());
+                    break;
+                case EncTags:
+                    packedFields.put(field, getEncTags());
+                    break;
+                case ProviderCode:
+                    packedFields.put(field, getProviderCode());
+                    break;
+                case AdditionalInfo:
+                    packedFields.put(field, getAdditionalInfo());
+                    break;
+            }
+        }
+        return packedFields;
     }
 }
