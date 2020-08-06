@@ -8,11 +8,11 @@ import org.lanter.lan4gate.Messages.Response.*;
 import org.lanter.lan4gate.Implementation.Messages.Fields.ClassFieldValuesList;
 import org.lanter.lan4gate.Implementation.Messages.Fields.NotificationFields;
 import org.lanter.lan4gate.Implementation.Messages.Fields.RootFields;
-import org.lanter.lan4gate.Implementation.Messages.Responses.Notification;
+import org.lanter.lan4gate.Implementation.Messages.Response.Notification;
 import org.lanter.lan4gate.Messages.OperationsList;
-import org.lanter.lan4gate.Implementation.Messages.Responses.ArrayStubOperation;
-import org.lanter.lan4gate.Implementation.Messages.Responses.Response;
-import org.lanter.lan4gate.Implementation.Messages.Responses.ResponseBuilder;
+import org.lanter.lan4gate.Implementation.Messages.Response.ArrayStubOperation;
+import org.lanter.lan4gate.Implementation.Messages.Response.Response;
+import org.lanter.lan4gate.Implementation.Messages.Response.ResponseBuilder;
 
 import java.util.HashSet;
 import java.util.Set;
