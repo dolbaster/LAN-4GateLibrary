@@ -10,7 +10,7 @@ import java.nio.channels.*;
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-public class TCPCommunication implements ICommunication {
+public class SingleConnectionTCPServer implements ICommunication {
     private ServerSocketChannel mServerChannel;
     private Selector mConnectionSelector;
     private Thread mMonitoringThread;

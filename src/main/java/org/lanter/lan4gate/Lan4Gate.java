@@ -1,7 +1,7 @@
 package org.lanter.lan4gate;
 
 import org.lanter.lan4gate.Communication.ICommunication;
-import org.lanter.lan4gate.Implementation.Communication.TCPCommunication;
+import org.lanter.lan4gate.Implementation.Communication.SingleConnectionTCPServer;
 import org.lanter.lan4gate.MessageProcessor.Builder.IMessageBuilder;
 import org.lanter.lan4gate.MessageProcessor.Builder.MessageBuilderFactory;
 import org.lanter.lan4gate.MessageProcessor.Parser.IMessageParser;
@@ -13,7 +13,6 @@ import org.lanter.lan4gate.Messages.Request.IRequest;
 import org.lanter.lan4gate.Messages.Request.RequestFactory;
 import org.lanter.lan4gate.Messages.Response.IResponse;
 
-import javax.xml.crypto.Data;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
@@ -33,7 +32,7 @@ public class Lan4Gate implements Runnable {
 
     private int mPort = 20501;
 
-    private ICommunication mCommunication = new TCPCommunication();
+    private ICommunication mCommunication = new SingleConnectionTCPServer();
 
     private Thread mThread = null;
     /**
@@ -133,8 +132,8 @@ public class Lan4Gate implements Runnable {
     @Deprecated
     public void setPort(int port) {
         mPort = port;
-        if(mCommunication instanceof TCPCommunication) {
-            ((TCPCommunication) mCommunication).setPort(mPort);
+        if(mCommunication instanceof SingleConnectionTCPServer) {
+            ((SingleConnectionTCPServer) mCommunication).setPort(mPort);
         }
     }
 
@@ -300,7 +299,7 @@ public class Lan4Gate implements Runnable {
 
     public void run() {
         if(mCommunication == null){
-            mCommunication = new TCPCommunication();
+            mCommunication = new SingleConnectionTCPServer();
         }
 
         boolean isConnected = false;

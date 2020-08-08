@@ -75,6 +75,6 @@ public class JSONMessageBuilder implements IMessageBuilder {
     }
 
     private ByteBuffer convertToByteBuffer(String message){
-        return StandardCharsets.UTF_8.encode(message);
+        return StandardCharsets.UTF_8.encode(message).slice();
     }
 }
