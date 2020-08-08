@@ -45,6 +45,14 @@ public class Lan4Gate implements Runnable {
         mEcrNumber = ecrNumber;
     }
 
+    void addCommunication(ICommunication communication) throws RuntimeException {
+        if(!isStarted()) {
+            mCommunication = communication;
+        } else {
+            throw new RuntimeException("Stop Lan4Gate before change communication");
+        }
+
+    }
     /**
      * Add listener for {@link IResponseCallback}
      *
