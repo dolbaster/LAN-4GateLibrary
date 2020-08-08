@@ -6,8 +6,8 @@ import org.lanter.lan4gate.Messages.Bridge.IBridge;
 import org.lanter.lan4gate.Messages.Notification.INotification;
 import org.lanter.lan4gate.Messages.Request.IRequest;
 import org.lanter.lan4gate.Messages.Response.IResponse;
-import org.lanter.lan4gate.Implementation.Messages.Fields.RootFields;
-import org.lanter.lan4gate.Implementation.Messages.Fields.ClassFieldValuesList;
+import org.lanter.lan4gate.Implementation.MessageProcessor.Fields.RootFields;
+import org.lanter.lan4gate.Implementation.MessageProcessor.Fields.ClassFieldValuesList;
 
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
@@ -20,7 +20,6 @@ public class JSONMessageBuilder implements IMessageBuilder {
         if(request != null && request.checkMandatoryFields()) {
             JSONObject root = new JSONObject();
             if(createClassField(root, ClassFieldValuesList.Request) &&  createObjectField(root, request)) {
-
                 result = convertToByteBuffer(root.toString());
             }
         }
@@ -46,7 +45,14 @@ public class JSONMessageBuilder implements IMessageBuilder {
 
     @Override
     public ByteBuffer buildMessage(IBridge bridge) {
-        return null;
+        ByteBuffer result = null;
+        if(bridge != null && bridge.checkMandatoryFields()) {
+            JSONObject root = new JSONObject();
+            if(createClassField(root, ClassFieldValuesList.Bridge) &&  createObjectField(root, bridge)) {
+                result = convertToByteBuffer(root.toString());
+            }
+        }
+        return result;
     }
 
     private boolean createClassField(JSONObject root, final ClassFieldValuesList type) {
@@ -55,12 +61,17 @@ public class JSONMessageBuilder implements IMessageBuilder {
     }
 
     private boolean createObjectField(JSONObject root, IRequest request) {
-        return JSONRequestBuilder.createRequestObject(root, request);
+        return JSONRequestBuilder.createObject(root, request);
     }
+
 
     private boolean createObjectField(JSONObject root, IResponse response) {
         //JSONReBuilder.createRequestObject(root, request);
         return false;
+    }
+
+    private boolean createObjectField(JSONObject root, IBridge bridge) {
+        return JSONBridgeBuilder.createObject(root, bridge);
     }
 
     private ByteBuffer convertToByteBuffer(String message){

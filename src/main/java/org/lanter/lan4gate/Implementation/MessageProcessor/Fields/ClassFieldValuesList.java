@@ -1,4 +1,4 @@
-package org.lanter.lan4gate.Implementation.Messages.Fields;
+package org.lanter.lan4gate.Implementation.MessageProcessor.Fields;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -9,7 +9,9 @@ public enum ClassFieldValuesList {
 
     Response ( "LANTER::Response"),
 
-    Notification ( "LANTER::Notification");
+    Notification ( "LANTER::Notification"),
+
+    Bridge("Com");
 
     private final String mValue;
     private static final Map<String, ClassFieldValuesList> mStaticValuesMap = new HashMap<>();

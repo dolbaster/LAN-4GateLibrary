@@ -1,12 +1,61 @@
 package org.lanter.lan4gate.MessageProcessor.Parser;
 
-import org.lanter.lan4gate.Implementation.Messages.Fields.ClassFieldValuesList;
-import org.lanter.lan4gate.Implementation.Messages.Response.Notification;
-import org.lanter.lan4gate.Implementation.Messages.Response.Response;
+import org.lanter.lan4gate.Messages.Bridge.IBridge;
+import org.lanter.lan4gate.Messages.Notification.INotification;
+import org.lanter.lan4gate.Messages.Response.IResponse;
 
+/**
+ * The interface Message parser.
+ */
 public interface IMessageParser {
-    ClassFieldValuesList getType();
-    Response getResponse();
-    Notification getNotification();
-    boolean parse(String json);
+
+    /**
+     * Gets response.
+     *
+     * @return the response
+     */
+    IResponse getResponse();
+
+    /**
+     * Gets response count.
+     *
+     * @return the response count
+     */
+    int getResponseCount();
+
+    /**
+     * Gets notification.
+     *
+     * @return the notification
+     */
+    INotification getNotification();
+
+    /**
+     * Gets notification count.
+     *
+     * @return the notification count
+     */
+    int getNotificationCount();
+
+    /**
+     * Gets bridge.
+     *
+     * @return the bridge
+     */
+    IBridge getBridge();
+
+    /**
+     * Gets bridge count.
+     *
+     * @return the bridge count
+     */
+    int getBridgeCount();
+
+    /**
+     * Parse message type.
+     *
+     * @param json the json
+     * @return the message type
+     */
+    MessageType parse(String json);
 }

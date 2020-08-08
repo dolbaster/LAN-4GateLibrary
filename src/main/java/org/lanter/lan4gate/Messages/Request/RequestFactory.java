@@ -12,7 +12,7 @@ import org.lanter.lan4gate.Messages.OperationsList;
 
 public class RequestFactory {
     public static IRequest getRequest(OperationsList operation, int ecrNumber) {
-        Request result;
+        Request result = null;
         switch (operation) {
             case Sale: {
                 result = new Sale();
@@ -130,11 +130,34 @@ public class RequestFactory {
                 result = new SelfTest();
                 break;
             }
-            default: {
-                throw new UnsupportedOperationException("Operation " + operation.name() + " not supported yet");
-            }
+            case GetOperationCopy:
+                result = new GetOperationCopy();
+                break;
+            case DisplayQR:
+                result = new DisplayQR();
+                break;
+            case SendLogs:
+                result = new SendLogs();
+                break;
+            case SetLogLevel:
+                result = new SetLogLevel();
+                break;
+            case LicenceActivationFile:
+                result = new LicenceActivationFile();
+                break;
+            case LicenceActivationServer:
+                result = new LicenceActivationServer();
+                break;
+            case ClearReversal:
+                result = new ClearReversal();
+                break;
+            case ClearAllJournals:
+                result = new ClearAllJournals();
+                break;
         }
-        result.setEcrNumber(ecrNumber);
+        if(result != null) {
+            result.setEcrNumber(ecrNumber);
+        }
         return result;
     }
 }

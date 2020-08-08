@@ -1,8 +1,10 @@
-package org.lanter.lan4gate.Implementation.Communication;
+package org.lanter.lan4gate.Communication;
+
+import java.nio.ByteBuffer;
 
 public interface ICommunicationListener {
 
-    void newData(String data);
+    void newData(ByteBuffer data);
 
     void communicationStarted();
 

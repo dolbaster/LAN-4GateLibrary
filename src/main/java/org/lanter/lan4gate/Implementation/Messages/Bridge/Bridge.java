@@ -31,7 +31,7 @@ public class Bridge implements IBridge {
 
     protected Bridge() {
         addMandatoryFields(BridgeFieldsList.Command);
-        addMandatoryFields(BridgeFieldsList.Link);
+        addMandatoryFields(BridgeFieldsList.LinkID);
     }
     @Override
     public Set<BridgeFieldsList> getMandatoryFields() {
@@ -46,6 +46,11 @@ public class Bridge implements IBridge {
     @Override
     public Set<BridgeFieldsList> getCurrentFields() {
         return mFields;
+    }
+
+    @Override
+    public boolean checkMandatoryFields() {
+        return mFields.containsAll(mMandatoryFieldsList);
     }
 
     @Override

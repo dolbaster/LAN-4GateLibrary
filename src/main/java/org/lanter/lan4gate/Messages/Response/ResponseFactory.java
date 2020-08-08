@@ -1,5 +1,6 @@
-package org.lanter.lan4gate.Implementation.Messages.Response;
+package org.lanter.lan4gate.Messages.Response;
 
+import org.lanter.lan4gate.Implementation.Messages.Response.Response;
 import org.lanter.lan4gate.Messages.OperationsList;
 import org.lanter.lan4gate.Implementation.Messages.Response.Operations.RefundOperations.Refund;
 import org.lanter.lan4gate.Implementation.Messages.Response.Operations.RefundOperations.RefundWithoutRRN;
@@ -9,11 +10,11 @@ import org.lanter.lan4gate.Implementation.Messages.Response.Operations.VoidOpera
 import org.lanter.lan4gate.Implementation.Messages.Response.Operations.VoidOperations.VoidPartialSale;
 import org.lanter.lan4gate.Implementation.Messages.Response.Operations.VoidOperations.VoidPreAuth;
 
-public class ResponseBuilder {
-    public Response prepareResponse(OperationsList operation) {
-        return prepareResponse(operation, OperationsList.NoOperation);
+public class ResponseFactory {
+    public IResponse getResponse(OperationsList operation) {
+        return getResponse(operation, OperationsList.NoOperation);
     }
-    public Response prepareResponse(OperationsList operation, OperationsList originalOperation) {
+    public IResponse getResponse(OperationsList operation, OperationsList originalOperation) {
         Response result = null;
         switch (operation) {
             case Sale: {

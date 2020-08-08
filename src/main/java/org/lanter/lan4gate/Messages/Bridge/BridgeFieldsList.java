@@ -10,7 +10,8 @@ public enum BridgeFieldsList {
 	LinkID("Lnk"),
 	Data("Dt"),
 	IP("IP"),
-	Port("Port");
+	Port("Port"),
+    Status("Status");
 
     private final String mValue;
     private static final Map<String, BridgeFieldsList> mStaticValuesMap = new HashMap<>();

@@ -2,13 +2,13 @@ package org.lanter.lan4gate.Implementation.MessageProcessor.Builder;
 
 import org.json.JSONObject;
 import org.lanter.lan4gate.Messages.Request.IRequest;
-import org.lanter.lan4gate.Implementation.Messages.Fields.RootFields;
+import org.lanter.lan4gate.Implementation.MessageProcessor.Fields.RootFields;
 import org.lanter.lan4gate.Messages.Request.RequestFieldsList;
 
 import java.util.Set;
 
 public class JSONRequestBuilder {
-    public static boolean createRequestObject(JSONObject root, IRequest request) {
+    public static boolean createObject(JSONObject root, IRequest request) {
         JSONObject object = new JSONObject();
         addObjectFields(object, request);
 

@@ -1,8 +1,7 @@
 package org.lanter.lan4gate;
 
 import org.lanter.lan4gate.Implementation.Communication.TCPCommunication;
-import org.lanter.lan4gate.Implementation.Communication.ICommunicationListener;
-import org.lanter.lan4gate.Implementation.Messages.Fields.ClassFieldValuesList;
+import org.lanter.lan4gate.Communication.ICommunicationListener;
 import org.lanter.lan4gate.MessageProcessor.Builder.IMessageBuilder;
 import org.lanter.lan4gate.MessageProcessor.Builder.MessageBuilderFactory;
 import org.lanter.lan4gate.MessageProcessor.Parser.IMessageParser;
@@ -15,6 +14,7 @@ import org.lanter.lan4gate.Messages.Request.RequestFactory;
 import org.lanter.lan4gate.Messages.Response.IResponse;
 
 import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -204,24 +204,28 @@ public class Lan4Gate implements ICommunicationListener {
         IMessageBuilder builder = MessageBuilderFactory.getBuilder();
         ByteBuffer result = builder.buildMessage((Request) request);
         if(result != null) {
-            mTCPCommunication.addSendData(result);
+            mTCPCommunication.sendData(result);
         }
     }
     @Override
-    public void newData(String data) {
+    public void newData(ByteBuffer data) {
+        String convertedData = StandardCharsets.UTF_8.decode(data).toString();
+
         IMessageParser parser = MessageParserFactory.getParser();
-        if(parser.parse(data)) {
-            if(parser.getType() == ClassFieldValuesList.Response) {
+
+        switch (parser.parse(convertedData)) {
+            case Response:
                 IResponse response = parser.getResponse();
                 for (IResponseCallback callback : mResponseListeners) {
                     callback.newResponseMessage(response, this);
                 }
-            } else if(parser.getType() == ClassFieldValuesList.Notification) {
+                break;
+            case Notification:
                 INotification notification = parser.getNotification();
                 for (INotificationCallback callback : mNotificationListeners) {
                     callback.newNotificationMessage(notification, this);
                 }
-            }
+                break;
         }
     }
 

@@ -30,6 +30,7 @@ public interface IBridge {
      */
     Set<BridgeFieldsList> getCurrentFields();
 
+    boolean checkMandatoryFields();
     /**
      * Gets command.
      *

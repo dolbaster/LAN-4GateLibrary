@@ -1,7 +1,7 @@
 package org.lanter.lan4gate.Implementation.MessageProcessor.Builder;
 
 import org.json.JSONObject;
-import org.lanter.lan4gate.Implementation.Messages.Fields.RootFields;
+import org.lanter.lan4gate.Implementation.MessageProcessor.Fields.RootFields;
 import org.lanter.lan4gate.Messages.Response.IResponse;
 import org.lanter.lan4gate.Messages.Response.ResponseFieldsList;
 

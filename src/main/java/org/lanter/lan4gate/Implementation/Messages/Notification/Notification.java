@@ -1,4 +1,4 @@
-package org.lanter.lan4gate.Implementation.Messages.Response;
+package org.lanter.lan4gate.Implementation.Messages.Notification;
 
 import org.lanter.lan4gate.Messages.Notification.INotification;
 import org.lanter.lan4gate.Messages.Notification.NotificationsList;
