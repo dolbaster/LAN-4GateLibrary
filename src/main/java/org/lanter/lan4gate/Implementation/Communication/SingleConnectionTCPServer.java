@@ -193,7 +193,7 @@ public class SingleConnectionTCPServer implements ICommunication {
         while (bytes > 0)
         {
             buf.flip();
-            outputStream.write(buf.array());
+            outputStream.write(buf.array(), 0, bytes);
             buf.clear();
             bytes = channel.read(buf);
         }
