@@ -179,7 +179,7 @@ public class Lan4Gate implements Runnable {
      * @return True, if already and correct started
      */
     public boolean isStarted() {
-        return mThread.isAlive();
+        return mThread != null && mThread.isAlive();
     }
 
     /**
