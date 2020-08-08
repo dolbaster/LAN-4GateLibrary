@@ -1,14 +1,12 @@
 package org.lanter.lan4gate.Implementation.Communication;
 
 import org.lanter.lan4gate.Communication.ICommunication;
-import org.lanter.lan4gate.Communication.ICommunicationListener;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.*;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -21,29 +19,20 @@ public class TCPCommunication implements ICommunication {
     private final Queue<ByteBuffer> mReceivedData = new ConcurrentLinkedQueue<>();
     private int mPort = 20501;
 
-    private final Set<ICommunicationListener> mNewDataListeners = new HashSet<>();
-
-    public void addCommunicationListener(ICommunicationListener listener) {
-        mNewDataListeners.add(listener);
-    }
-    public void removeCommunicationListener(ICommunicationListener listener) {
-        mNewDataListeners.remove(listener);
-    }
-
     @Override
     public void openCommunication() throws IOException{
         createSelector();
         createTcpServer();
         runServer();
-        notifyCommunicationStarted();
+    }
+
+    @Override
+    public void closeCommunication() throws IOException {
+        stopSelector();
     }
 
     public void setPort(int port) { mPort = port; }
     public int getPort() { return mPort; }
-    public boolean isStarted() {
-        boolean threadIsAlive = mMonitoringThread != null && mMonitoringThread.isAlive();
-        return threadIsAlive;
-    }
 
     @Override
     public void sendData(ByteBuffer data) {
@@ -85,27 +74,11 @@ public class TCPCommunication implements ICommunication {
     }
 
     public boolean isOpen () {
-        boolean selectorIsOpen = mConnectionSelector != null && mConnectionSelector.isOpen();
-        return  selectorIsOpen;
+        return mConnectionSelector != null && mConnectionSelector.isOpen();
     }
 
     public boolean isConnected() {
         return mRegisteredConnection != null;
-    }
-
-    public void startMonitoring()  {
-        if(mMonitoringThread == null)
-        {
-            mMonitoringThread = new Thread(this);
-            mMonitoringThread.start();
-        }
-    }
-
-    public void stopMonitoring() {
-        if(mMonitoringThread != null) {
-            mMonitoringThread.interrupt();
-            mMonitoringThread = null;
-        }
     }
 
     private void createSelector() throws IOException {
@@ -149,7 +122,6 @@ public class TCPCommunication implements ICommunication {
                 }
             }
             mConnectionSelector.close();
-            notifyCommunicationStopped();
         }
         catch (Exception ignored)
         {
@@ -159,8 +131,8 @@ public class TCPCommunication implements ICommunication {
     private void closeClientConnection(SelectionKey key) throws IOException {
         closeConnection(key);
         mDataForSend.clear();
+        mReceivedData.clear();
         mRegisteredConnection = null;
-        notifyDisconnected();
     }
     private void closeConnection(SelectionKey key) throws IOException{
         if (key.channel().isRegistered())
@@ -172,7 +144,6 @@ public class TCPCommunication implements ICommunication {
     private void addConnection(SelectionKey key) throws IOException {
         if(allowRegisterConnection()) {
             mRegisteredConnection = key;
-            notifyConnected();
         } else {
             closeConnection(key);
         }
@@ -238,100 +209,5 @@ public class TCPCommunication implements ICommunication {
     }
     public boolean allowRegisterConnection() {
         return mRegisteredConnection == null;
-    }
-    private void notifyNewData(final ByteBuffer newData) {
-        if(newData != null) {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    for (ICommunicationListener listener : mNewDataListeners) {
-                        listener.newData(newData);
-                    }
-                }
-            }).start();
-        }
-    }
-    private void notifyCommunicationStarted() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                for (ICommunicationListener listener : mNewDataListeners) {
-                    listener.communicationStarted();
-                }
-            }
-        }).start();
-    }
-
-    private void notifyCommunicationStopped() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                for (ICommunicationListener listener : mNewDataListeners) {
-                    listener.communicationStopped();
-                }
-            }
-        }).start();
-    }
-
-    private void notifyConnected() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                for (ICommunicationListener listener : mNewDataListeners) {
-                    listener.connected();
-                }
-            }
-        }).start();
-    }
-
-    private void notifyDisconnected() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                for (ICommunicationListener listener : mNewDataListeners) {
-                    listener.disconnected();
-                }
-            }
-        }).start();
-    }
-    private void notifyError(String message) {
-        final String msg = message;
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                for (ICommunicationListener listener : mNewDataListeners) {
-                    listener.errorMessage(msg);
-                }
-            }
-        }).start();
-    }
-    private void notifyException(Exception exception) {
-        final Exception exp = exception;
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                for (ICommunicationListener listener : mNewDataListeners) {
-                    listener.errorException(exp);
-                }
-            }
-        }).start();
-    }
-
-    @Override
-    public void run() {
-        try
-        {
-            openCommunication();
-            notifyCommunicationStarted();
-            while(!Thread.currentThread().isInterrupted()) {
-                doCommunication();
-                notifyNewData(getData());
-            }
-            stopSelector();
-        }
-        catch (IOException exception)
-        {
-            notifyException(exception);
-        }
     }
 }

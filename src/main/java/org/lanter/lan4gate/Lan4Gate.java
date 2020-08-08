@@ -1,7 +1,7 @@
 package org.lanter.lan4gate;
 
+import org.lanter.lan4gate.Communication.ICommunication;
 import org.lanter.lan4gate.Implementation.Communication.TCPCommunication;
-import org.lanter.lan4gate.Communication.ICommunicationListener;
 import org.lanter.lan4gate.MessageProcessor.Builder.IMessageBuilder;
 import org.lanter.lan4gate.MessageProcessor.Builder.MessageBuilderFactory;
 import org.lanter.lan4gate.MessageProcessor.Parser.IMessageParser;
@@ -13,6 +13,8 @@ import org.lanter.lan4gate.Messages.Request.IRequest;
 import org.lanter.lan4gate.Messages.Request.RequestFactory;
 import org.lanter.lan4gate.Messages.Response.IResponse;
 
+import javax.xml.crypto.Data;
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
@@ -21,14 +23,19 @@ import java.util.Set;
 /**
  * This class encapsulates ECR protocol LAN-4Gate
  */
-public class Lan4Gate implements ICommunicationListener {
+public class Lan4Gate implements Runnable {
     private final Set<IResponseCallback> mResponseListeners = new HashSet<>();
     private final Set<INotificationCallback> mNotificationListeners = new HashSet<>();
     private final Set<ICommunicationCallback> mCommunicationListeners = new HashSet<>();
     private final Set<IErrorCallback> mErrorListeners = new HashSet<>();
-    private final int mEcrNumber;
-    private final TCPCommunication mTCPCommunication = new TCPCommunication();
 
+    private final int mEcrNumber;
+
+    private int mPort = 20501;
+
+    private ICommunication mCommunication = new TCPCommunication();
+
+    private Thread mThread = null;
     /**
      * Creates Lan4Gate object with ecrNumber
      *
@@ -36,7 +43,6 @@ public class Lan4Gate implements ICommunicationListener {
      */
     public Lan4Gate(int ecrNumber) {
         mEcrNumber = ecrNumber;
-        mTCPCommunication.addCommunicationListener(this);
     }
 
     /**
@@ -72,7 +78,7 @@ public class Lan4Gate implements ICommunicationListener {
      * @param callback Registered {@link ICommunicationCallback} object
      */
     public void removeCommunicationCallback(ICommunicationCallback callback) {
-        mResponseListeners.remove(callback);
+        mCommunicationListeners.remove(callback);
     }
 
     /**
@@ -116,8 +122,12 @@ public class Lan4Gate implements ICommunicationListener {
      *
      * @param port Value in range [0, 65535]
      */
+    @Deprecated
     public void setPort(int port) {
-        mTCPCommunication.setPort(port);
+        mPort = port;
+        if(mCommunication instanceof TCPCommunication) {
+            ((TCPCommunication) mCommunication).setPort(mPort);
+        }
     }
 
     /**
@@ -125,13 +135,15 @@ public class Lan4Gate implements ICommunicationListener {
      *
      * @return Value in range [0, 65535]
      */
-    public int getPort() { return mTCPCommunication.getPort(); }
+    @Deprecated
+    public int getPort() { return mPort; }
 
     /**
      * Sets IP for connection in TCP Client mode
      * Currently is STUB
      * @param ip String in format "127.0.0.1"
      */
+    @Deprecated
     public void setIP(String ip) { }
 
     /**
@@ -139,6 +151,7 @@ public class Lan4Gate implements ICommunicationListener {
      *
      * @return String in format "127.0.0.1"
      */
+    @Deprecated
     public String getIP() { return "127.0.0.1"; }
 
     /**
@@ -146,7 +159,10 @@ public class Lan4Gate implements ICommunicationListener {
      * After correct start {@link ICommunicationCallback}.communicationStarted() will be called
      */
     public void start() {
-        mTCPCommunication.startMonitoring();
+        if(mThread == null) {
+            mThread = new Thread(this);
+            mThread.start();
+        }
     }
 
     /**
@@ -155,7 +171,7 @@ public class Lan4Gate implements ICommunicationListener {
      * @return True, if already and correct started
      */
     public boolean isStarted() {
-        return mTCPCommunication.isStarted();
+        return mThread.isAlive();
     }
 
     /**
@@ -165,7 +181,7 @@ public class Lan4Gate implements ICommunicationListener {
      * @return True, if client link opened
      */
     public boolean linkIsOpen() {
-        return mTCPCommunication.isOpen();
+        return mCommunication != null && mCommunication.isOpen();
     }
 
     /**
@@ -174,14 +190,19 @@ public class Lan4Gate implements ICommunicationListener {
      * @return True, if client is connected.
      */
     public boolean linkIsConnected() {
-        return mTCPCommunication.isConnected();
+        return mCommunication != null && mCommunication.isConnected();
     }
 
     /**
      * Stop protocol communication.
      * After correct start {@link ICommunicationCallback}.communicationStopped() will be called
      */
-    public void stop() { mTCPCommunication.stopMonitoring(); }
+    public void stop() {
+        if(mThread != null) {
+            mThread.interrupt();
+            mThread = null;
+        }
+    }
 
     /**
      * Prepare and returns {@link IRequest} object.
@@ -204,70 +225,111 @@ public class Lan4Gate implements ICommunicationListener {
         IMessageBuilder builder = MessageBuilderFactory.getBuilder();
         ByteBuffer result = builder.buildMessage((Request) request);
         if(result != null) {
-            mTCPCommunication.sendData(result);
-        }
-    }
-    @Override
-    public void newData(ByteBuffer data) {
-        String convertedData = StandardCharsets.UTF_8.decode(data).toString();
-
-        IMessageParser parser = MessageParserFactory.getParser();
-
-        switch (parser.parse(convertedData)) {
-            case Response:
-                IResponse response = parser.getResponse();
-                for (IResponseCallback callback : mResponseListeners) {
-                    callback.newResponseMessage(response, this);
-                }
-                break;
-            case Notification:
-                INotification notification = parser.getNotification();
-                for (INotificationCallback callback : mNotificationListeners) {
-                    callback.newNotificationMessage(notification, this);
-                }
-                break;
+            try {
+                mCommunication.sendData(result);
+            } catch (Exception ignored) {}
         }
     }
 
-    @Override
-    public void communicationStarted() {
+    private void newData(ByteBuffer data) {
+        if(data != null) {
+            String convertedData = StandardCharsets.UTF_8.decode(data).toString();
+
+            IMessageParser parser = MessageParserFactory.getParser();
+
+            switch (parser.parse(convertedData)) {
+                case Response:
+                    IResponse response = parser.getResponse();
+                    for (IResponseCallback callback : mResponseListeners) {
+                        callback.newResponseMessage(response, this);
+                    }
+                    break;
+                case Notification:
+                    INotification notification = parser.getNotification();
+                    for (INotificationCallback callback : mNotificationListeners) {
+                        callback.newNotificationMessage(notification, this);
+                    }
+                    break;
+            }
+        }
+    }
+
+    private void communicationStarted() {
         for(ICommunicationCallback callback : mCommunicationListeners) {
             callback.communicationStarted(this);
         }
     }
 
-    @Override
-    public void communicationStopped() {
+    private void communicationStopped() {
         for(ICommunicationCallback callback : mCommunicationListeners) {
             callback.communicationStopped(this);
         }
     }
 
-    @Override
-    public void connected() {
+    private void connected() {
         for(ICommunicationCallback callback : mCommunicationListeners) {
             callback.connected(this);
         }
     }
 
-    @Override
-    public void disconnected() {
+    private void disconnected() {
         for(ICommunicationCallback callback : mCommunicationListeners) {
             callback.disconnected(this);
         }
     }
 
-    @Override
-    public void errorMessage(String error) {
+    private void errorMessage(String error) {
         for(IErrorCallback callback : mErrorListeners) {
             callback.errorMessage(error,this);
         }
     }
 
-    @Override
-    public void errorException(Exception exception) {
+    private void errorException(Exception exception) {
         for(IErrorCallback callback : mErrorListeners) {
             callback.errorException(exception, this);
         }
+    }
+
+    public void run() {
+        if(mCommunication == null){
+            mCommunication = new TCPCommunication();
+        }
+
+        boolean isConnected = false;
+        while (!Thread.currentThread().isInterrupted()) {
+            try {
+                if(mCommunication != null) {
+                    if(!mCommunication.isOpen()) {
+                        mCommunication.openCommunication();
+                        communicationStarted();
+                    }
+                    mCommunication.doCommunication();
+                    if(isConnected != mCommunication.isConnected()) {
+                        isConnected = mCommunication.isConnected();
+
+                        if(isConnected){
+                            connected();
+                        } else {
+                            disconnected();
+                        }
+                    }
+
+                    if(isConnected) {
+                        newData(mCommunication.getData());
+                    }
+                }
+            } catch (Exception e) {
+                errorException(e);
+            }
+        }
+
+        if(mCommunication != null) {
+            try {
+                mCommunication.closeCommunication();
+            } catch (IOException e) {
+                errorException(e);
+            }
+        }
+        communicationStopped();
     }
 }

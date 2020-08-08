@@ -6,26 +6,13 @@ import java.nio.ByteBuffer;
 /**
  * The interface Communication.
  */
-public interface ICommunication extends Runnable {
-    /**
-     * Add communication listener.
-     *
-     * @param listener the listener
-     */
-    void addCommunicationListener(ICommunicationListener listener);
-
-    /**
-     * Remove communication listener.
-     *
-     * @param listener the listener
-     */
-    void removeCommunicationListener(ICommunicationListener listener);
-
+public interface ICommunication {
     /**
      * Open communication.
      */
     void openCommunication() throws IOException;
 
+    void closeCommunication() throws IOException;
     /**
      * Is open boolean.
      *
@@ -39,24 +26,6 @@ public interface ICommunication extends Runnable {
      * @return the boolean
      */
     boolean isConnected();
-
-    /**
-     * Start monitoring.
-     */
-    void startMonitoring() throws IOException;
-
-    /**
-     * Stop monitoring.
-     */
-    void stopMonitoring();
-
-    /**
-     * Is started boolean.
-     *
-     * @return the boolean
-     */
-    boolean isStarted() ;
-
 
     /**
      * Send data.
