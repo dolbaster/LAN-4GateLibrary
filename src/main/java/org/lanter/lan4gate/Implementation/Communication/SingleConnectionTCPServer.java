@@ -13,7 +13,6 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class SingleConnectionTCPServer implements ICommunication {
     private ServerSocketChannel mServerChannel;
     private Selector mConnectionSelector;
-    private Thread mMonitoringThread;
     private SelectionKey mRegisteredConnection = null;
     private final Queue<ByteBuffer> mDataForSend = new ConcurrentLinkedQueue<>();
     private final Queue<ByteBuffer> mReceivedData = new ConcurrentLinkedQueue<>();
