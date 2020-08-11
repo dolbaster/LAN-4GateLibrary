@@ -1,32 +1,34 @@
 package org.lanter.lan4gate.Implementation.MessageProcessor.Builder;
 
+import android.util.Base64;
+
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.lanter.lan4gate.Implementation.MessageProcessor.Fields.RootFields;
 import org.lanter.lan4gate.Messages.Bridge.IBridge;
 import org.lanter.lan4gate.Messages.Bridge.BridgeFieldsList;
 
 import java.util.Set;
-import org.apache.commons.codec.binary.Base64;
 
 public class JSONBridgeBuilder {
-    public static boolean createObject(JSONObject root, IBridge bridge) {
+    public static boolean createObject(JSONObject root, IBridge bridge) throws JSONException {
         JSONObject object = new JSONObject();
         addObjectFields(object, bridge);
 
-        boolean result = !object.isEmpty();
+        boolean result = object.length() > 0;
         if(result) {
             root.put(RootFields.OBJECT, object);
         }
         return result;
     }
 
-    private static void addObjectFields(JSONObject object, IBridge bridge) {
+    private static void addObjectFields(JSONObject object, IBridge bridge) throws JSONException {
         if(bridge != null) {
             addFields(object, bridge.getMandatoryFields(), bridge);
             addFields(object, bridge.getOptionalFields(), bridge);
         }
     }
-    private static void addFields(JSONObject object, final Set<BridgeFieldsList> fields, IBridge bridge) {
+    private static void addFields(JSONObject object, final Set<BridgeFieldsList> fields, IBridge bridge) throws JSONException {
         if(fields != null && object != null) {
             for (BridgeFieldsList field : fields) {
                 switch (field)
@@ -38,10 +40,7 @@ public class JSONBridgeBuilder {
                         object.put(field.getString(), bridge.getLinkID());
                         break;
                     case Data:
-                        //In Java 7 Base64 encoder/decoder ia unavailable.
-                        //This is not uses only in Android.
-                        //Use apache codecs
-                        String encoded = org.apache.commons.codec.binary.Base64.encodeBase64String(bridge.getData().array());
+                        String encoded = Base64.encodeToString(bridge.getData().array(), Base64.NO_WRAP);
                         object.put(field.getString(), encoded);
                         break;
                     case IP:

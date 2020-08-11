@@ -1,5 +1,6 @@
 package org.lanter.lan4gate.Implementation.MessageProcessor.Builder;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.lanter.lan4gate.Messages.Request.IRequest;
 import org.lanter.lan4gate.Implementation.MessageProcessor.Fields.RootFields;
@@ -8,24 +9,24 @@ import org.lanter.lan4gate.Messages.Request.RequestFieldsList;
 import java.util.Set;
 
 public class JSONRequestBuilder {
-    public static boolean createObject(JSONObject root, IRequest request) {
+    public static boolean createObject(JSONObject root, IRequest request) throws JSONException {
         JSONObject object = new JSONObject();
         addObjectFields(object, request);
 
-        boolean result = !object.isEmpty();
+        boolean result = object.length() > 0;
         if(result) {
             root.put(RootFields.OBJECT, object);
         }
         return result;
     }
 
-    private static void addObjectFields(JSONObject object, IRequest request) {
+    private static void addObjectFields(JSONObject object, IRequest request) throws JSONException {
         if(request != null) {
             addFields(object, request.getMandatoryFields(), request);
             addFields(object, request.getOptionalFields(), request);
         }
     }
-    private static void addFields(JSONObject object, final Set<RequestFieldsList> fields, IRequest request) {
+    private static void addFields(JSONObject object, final Set<RequestFieldsList> fields, IRequest request) throws JSONException {
         if(fields != null && object != null) {
             for (RequestFieldsList field : fields) {
                 switch (field)

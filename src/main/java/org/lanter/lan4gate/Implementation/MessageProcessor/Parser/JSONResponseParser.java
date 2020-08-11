@@ -1,6 +1,7 @@
 package org.lanter.lan4gate.Implementation.MessageProcessor.Parser;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.lanter.lan4gate.Implementation.Messages.Response.ArrayStubOperation;
 import org.lanter.lan4gate.Messages.OperationsList;
@@ -10,7 +11,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class JSONResponseParser {
-    public static IResponse parse(JSONObject objectField) {
+    public static IResponse parse(JSONObject objectField) throws JSONException {
         IResponse result = null;
         IResponse response = createResponse(getOperationCode(objectField));
         if(response != null) {
@@ -31,7 +32,7 @@ public class JSONResponseParser {
     private static int getOperationCode(JSONObject objectField) {
         return objectField.optInt(ResponseFieldsList.OperationCode.getString(), 0);
     }
-    private static void getFields(Set<ResponseFieldsList> fields, JSONObject objectField, IResponse responseObject) {
+    private static void getFields(Set<ResponseFieldsList> fields, JSONObject objectField, IResponse responseObject) throws JSONException {
         for(ResponseFieldsList field : fields ) {
             if(objectField.has(field.getString())) {
                 switch (field) {
@@ -537,13 +538,13 @@ public class JSONResponseParser {
             responseObject.setRefundCount(refundCount);
         }
     }
-    private static void getFieldSalesArray (JSONObject objectField, IResponse responseObject) {
+    private static void getFieldSalesArray (JSONObject objectField, IResponse responseObject) throws JSONException {
         responseObject.setSalesArray(parseArray(ResponseFieldsList.SalesArray.getString(), objectField));
     }
-    private static void getFieldVoidArray(JSONObject objectField, IResponse responseObject) {
+    private static void getFieldVoidArray(JSONObject objectField, IResponse responseObject) throws JSONException {
         responseObject.setVoidArray(parseArray(ResponseFieldsList.VoidArray.getString(), objectField));
     }
-    private static void getFieldRefundArray(JSONObject objectField, IResponse responseObject) {
+    private static void getFieldRefundArray(JSONObject objectField, IResponse responseObject) throws JSONException {
         responseObject.setRefundArray(parseArray(ResponseFieldsList.RefundArray.getString(), objectField));
     }
     private static void getFieldCardPANHash (JSONObject objectField, IResponse responseObject) {
@@ -588,7 +589,7 @@ public class JSONResponseParser {
             responseObject.setReceiptLine5(receiptLine5);
         }
     }
-    private static Set<IResponse> parseArray(String arrayName, JSONObject objectField) {
+    private static Set<IResponse> parseArray(String arrayName, JSONObject objectField) throws JSONException {
         Set<IResponse> array = new HashSet<>();
         if(objectField.has(arrayName)){
             JSONArray jsonArray = objectField.getJSONArray(arrayName);

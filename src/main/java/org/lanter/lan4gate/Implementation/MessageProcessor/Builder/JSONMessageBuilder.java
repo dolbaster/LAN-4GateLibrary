@@ -1,5 +1,6 @@
 package org.lanter.lan4gate.Implementation.MessageProcessor.Builder;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.lanter.lan4gate.MessageProcessor.Builder.IMessageBuilder;
 import org.lanter.lan4gate.Messages.Bridge.IBridge;
@@ -17,11 +18,15 @@ public class JSONMessageBuilder implements IMessageBuilder {
     @Override
     public ByteBuffer buildMessage(IRequest request) {
         ByteBuffer result = null;
-        if(request != null && request.checkMandatoryFields()) {
-            JSONObject root = new JSONObject();
-            if(createClassField(root, ClassFieldValuesList.Request) &&  createObjectField(root, request)) {
-                result = convertToByteBuffer(root.toString());
+        try {
+            if (request != null && request.checkMandatoryFields()) {
+                JSONObject root = new JSONObject();
+                if (createClassField(root, ClassFieldValuesList.Request) && createObjectField(root, request)) {
+                    result = convertToByteBuffer(root.toString());
+                }
             }
+        } catch (JSONException ignored) {
+            //TODO add reaction
         }
         return result;
     }
@@ -46,35 +51,40 @@ public class JSONMessageBuilder implements IMessageBuilder {
     @Override
     public ByteBuffer buildMessage(IBridge bridge) {
         ByteBuffer result = null;
-        if(bridge != null && bridge.checkMandatoryFields()) {
-            JSONObject root = new JSONObject();
-            if(createClassField(root, ClassFieldValuesList.Bridge) &&  createObjectField(root, bridge)) {
-                result = convertToByteBuffer(root.toString());
+        try {
+            if (bridge != null && bridge.checkMandatoryFields()) {
+                JSONObject root = new JSONObject();
+                if (createClassField(root, ClassFieldValuesList.Bridge) && createObjectField(root, bridge)) {
+                    result = convertToByteBuffer(root.toString());
+                }
             }
+        } catch (JSONException ignored) {
+            //TODO add reaction
         }
         return result;
     }
 
-    private boolean createClassField(JSONObject root, final ClassFieldValuesList type) {
+    private boolean createClassField(JSONObject root, final ClassFieldValuesList type) throws JSONException {
         root.put(RootFields.CLASS, type.getString());
-        return !root.isEmpty();
+
+        return root.length() > 0;
     }
 
-    private boolean createObjectField(JSONObject root, IRequest request) {
+    private boolean createObjectField(JSONObject root, IRequest request) throws JSONException {
         return JSONRequestBuilder.createObject(root, request);
     }
 
 
-    private boolean createObjectField(JSONObject root, IResponse response) {
+    private boolean createObjectField(JSONObject root, IResponse response) throws JSONException {
         //JSONReBuilder.createRequestObject(root, request);
         return false;
     }
 
-    private boolean createObjectField(JSONObject root, IBridge bridge) {
+    private boolean createObjectField(JSONObject root, IBridge bridge) throws JSONException {
         return JSONBridgeBuilder.createObject(root, bridge);
     }
 
-    private ByteBuffer convertToByteBuffer(String message){
+    private ByteBuffer convertToByteBuffer(String message) {
         return StandardCharsets.UTF_8.encode(message).slice();
     }
 }

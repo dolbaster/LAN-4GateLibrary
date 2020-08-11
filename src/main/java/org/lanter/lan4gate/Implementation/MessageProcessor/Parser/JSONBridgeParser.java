@@ -1,5 +1,7 @@
 package org.lanter.lan4gate.Implementation.MessageProcessor.Parser;
 
+import android.util.Base64;
+
 import org.json.JSONObject;
 import org.lanter.lan4gate.Messages.Bridge.*;
 
@@ -65,7 +67,7 @@ public class JSONBridgeParser {
     private static void getIP(JSONObject object, IBridge bridge) {
         if(object != null && bridge != null) {
             String ip = object.optString(BridgeFieldsList.IP.getString());
-            if(ip != null && !ip.isEmpty()) {
+            if(!ip.isEmpty()) {
                 bridge.setIP(ip);
             }
         }
@@ -92,11 +94,11 @@ public class JSONBridgeParser {
     private static void getData(JSONObject object, IBridge bridge) {
         if(object != null && bridge != null) {
             String base64String = object.optString(BridgeFieldsList.Data.getString());
-            if(base64String != null && !base64String.isEmpty()) {
+            if(!base64String.isEmpty()) {
                 //In Java 7 Base64 encoder/decoder ia unavailable.
                 //This is not uses only in Android.
                 //Use apache codecs
-                ByteBuffer decodedData = ByteBuffer.wrap(org.apache.commons.codec.binary.Base64.decodeBase64(base64String));
+                ByteBuffer decodedData = ByteBuffer.wrap(Base64.decode(base64String, Base64.NO_WRAP)).slice();
 
                 bridge.setData(decodedData);
             }

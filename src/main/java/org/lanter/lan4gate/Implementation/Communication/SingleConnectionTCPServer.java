@@ -65,7 +65,7 @@ public class SingleConnectionTCPServer implements ICommunication {
                 }
                 if (key.isWritable())
                 {
-                    sendData(key, extractData(key));
+                    sendData(key, extractData());
                 }
             } catch (Exception ignored) { }
             iterator.remove();
@@ -153,7 +153,7 @@ public class SingleConnectionTCPServer implements ICommunication {
             ((SocketChannel) key.channel()).write(buffer);
         }
     }
-    private ByteBuffer extractData(SelectionKey key) throws IOException {
+    private ByteBuffer extractData() throws IOException {
         ByteBuffer buffer = mDataForSend.peek();
         mDataForSend.poll();
         return buffer;

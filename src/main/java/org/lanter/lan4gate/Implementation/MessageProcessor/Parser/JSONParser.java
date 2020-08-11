@@ -79,7 +79,9 @@ public class JSONParser implements IMessageParser {
                             break;
                     }
                 }
-            } catch (Exception ignored) {}
+            } catch (Exception ignored) {
+                //TODO add reaction
+            }
         }
         return result;
     }

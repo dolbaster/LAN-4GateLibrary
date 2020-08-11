@@ -18,7 +18,7 @@ public class SizeControlProxy implements ICommunication {
     private final int mSizeCharsCount = 4;
 
 
-    private ICommunication mCommunication = null;
+    private final ICommunication mCommunication;
 
     public SizeControlProxy(ICommunication communication) {
         mCommunication = communication;
@@ -61,7 +61,6 @@ public class SizeControlProxy implements ICommunication {
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             stream.write(getSendSize(data).getBytes());
             stream.write(data.array());
-            int size = stream.size();
             byte[] arr = stream.toByteArray();
             ByteBuffer buf = ByteBuffer.wrap(arr, 0, mSizeCharsCount + data.limit()).slice();
             mCommunication.sendData(buf);
