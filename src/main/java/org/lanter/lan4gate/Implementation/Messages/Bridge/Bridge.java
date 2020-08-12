@@ -60,6 +60,7 @@ public class Bridge implements IBridge {
 
     @Override
     public void setCommand(BridgeCommand command) {
+        mFields.add(BridgeFieldsList.Command);
         mCommand = command;
     }
 
@@ -70,6 +71,7 @@ public class Bridge implements IBridge {
 
     @Override
     public void setLinkID(int linkID) {
+        mFields.add(BridgeFieldsList.LinkID);
         mLinkID = linkID;
     }
 
@@ -80,6 +82,7 @@ public class Bridge implements IBridge {
 
     @Override
     public void setIP(String ip) {
+        mFields.add(BridgeFieldsList.IP);
         mIP = ip;
     }
 
@@ -90,16 +93,19 @@ public class Bridge implements IBridge {
 
     @Override
     public void setPort(int port) {
+        mFields.add(BridgeFieldsList.Port);
         mPort = port;
     }
 
     @Override
     public ByteBuffer getData() {
+
         return mData;
     }
 
     @Override
     public void setData(ByteBuffer data) {
+        mFields.add(BridgeFieldsList.Data);
         mData = data;
     }
 
@@ -110,6 +116,7 @@ public class Bridge implements IBridge {
 
     @Override
     public void setStatus(BridgeStatus status) {
+        mFields.add(BridgeFieldsList.Status);
         mStatus = status;
     }
 }
