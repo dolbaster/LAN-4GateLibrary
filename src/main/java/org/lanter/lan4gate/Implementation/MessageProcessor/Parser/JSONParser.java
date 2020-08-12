@@ -37,12 +37,12 @@ public class JSONParser implements IMessageParser {
 
     @Override
     public IBridge getBridge() {
-        return null;
+        return mBridge.poll();
     }
 
     @Override
     public int getBridgeCount() {
-        return 0;
+        return mBridge.size();
     }
 
     @Override
