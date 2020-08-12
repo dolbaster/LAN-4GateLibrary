@@ -72,7 +72,7 @@ public class SizeControlProxy implements ICommunication {
         if(mCommunication != null) {
             ByteBuffer buffer = mCommunication.getData();
             if(buffer != null) {
-                mCurrentDataStreamBuffer.write(buffer.array());
+                mCurrentDataStreamBuffer.write(buffer.array(), 0, buffer.limit());
             }
             if(mCurrentDataStreamBuffer.size() > 0) {
                 if(mMessageSize < 0) {
