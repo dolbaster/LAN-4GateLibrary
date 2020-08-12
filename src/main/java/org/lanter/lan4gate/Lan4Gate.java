@@ -330,6 +330,12 @@ public class Lan4Gate implements Runnable {
             mCommunication = new SingleConnectionTCPServer();
         }
 
+        if(mBridge != null) {
+            try {
+                mBridge.start();
+            } catch (IOException ignored) {
+            }
+        }
         boolean isConnected = false;
         while (!Thread.currentThread().isInterrupted()) {
             try {
@@ -362,6 +368,9 @@ public class Lan4Gate implements Runnable {
             }
         }
 
+        if(mBridge != null) {
+            mBridge.closeAllConnections();
+        }
         if(mCommunication != null) {
             try {
                 mCommunication.closeCommunication();
