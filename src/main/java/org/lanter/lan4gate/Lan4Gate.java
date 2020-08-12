@@ -2,10 +2,13 @@ package org.lanter.lan4gate;
 
 import org.lanter.lan4gate.Communication.ICommunication;
 import org.lanter.lan4gate.Implementation.Communication.SingleConnectionTCPServer;
+import org.lanter.lan4gate.Managers.BridgeManagerFactory;
+import org.lanter.lan4gate.Managers.IBridgeManager;
 import org.lanter.lan4gate.MessageProcessor.Builder.IMessageBuilder;
 import org.lanter.lan4gate.MessageProcessor.Builder.MessageBuilderFactory;
 import org.lanter.lan4gate.MessageProcessor.Parser.IMessageParser;
 import org.lanter.lan4gate.MessageProcessor.Parser.MessageParserFactory;
+import org.lanter.lan4gate.Messages.Bridge.IBridge;
 import org.lanter.lan4gate.Messages.Notification.INotification;
 import org.lanter.lan4gate.Messages.OperationsList;
 import org.lanter.lan4gate.Implementation.Messages.Requests.Request;
@@ -35,6 +38,8 @@ public class Lan4Gate implements Runnable {
     private ICommunication mCommunication = new SingleConnectionTCPServer();
 
     private Thread mThread = null;
+
+    private IBridgeManager mBridge;
     /**
      * Creates Lan4Gate object with ecrNumber
      *
@@ -44,7 +49,24 @@ public class Lan4Gate implements Runnable {
         mEcrNumber = ecrNumber;
     }
 
-    public void addCommunication(ICommunication communication) throws RuntimeException {
+    public void enableBridge() throws RuntimeException {
+        if(!isStarted()) {
+            if (mBridge == null) {
+                mBridge = BridgeManagerFactory.getManager();
+            }
+        } else {
+            throw new RuntimeException("Stop Lan4Gate before enable bridge");
+        }
+    }
+
+    public void disableBridge() throws RuntimeException {
+        if(!isStarted()) {
+
+        } else {
+            throw new RuntimeException("Stop Lan4Gate before disable bridge");
+        }
+    }
+    public void setCommunication(ICommunication communication) throws RuntimeException {
         if(!isStarted()) {
             mCommunication = communication;
         } else {
@@ -257,6 +279,12 @@ public class Lan4Gate implements Runnable {
                         callback.newNotificationMessage(notification, this);
                     }
                     break;
+                case Bridge:
+                    IBridge bridge = parser.getBridge();
+                    if(mBridge != null) {
+                        mBridge.newMessage(bridge);
+                    }
+                    break;
             }
         }
     }
@@ -305,6 +333,10 @@ public class Lan4Gate implements Runnable {
         boolean isConnected = false;
         while (!Thread.currentThread().isInterrupted()) {
             try {
+                if(mBridge != null) {
+                    mBridge.doManager();
+                }
+
                 if(mCommunication != null) {
                     if(!mCommunication.isOpen()) {
                         mCommunication.openCommunication();

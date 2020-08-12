@@ -1,11 +1,18 @@
 package org.lanter.lan4gate.Managers;
 
-import java.nio.ByteBuffer;
+import org.lanter.lan4gate.Communication.ICommunication;
+import org.lanter.lan4gate.Messages.Bridge.IBridge;
 
-public interface IBridgeManager extends Runnable{
+import java.io.IOException;
+
+public interface IBridgeManager{
+
+    void newMessage(IBridge message);
+    void start() throws IOException;
+
     void closeAllConnections();
-    void stop();
-    ByteBuffer getMessage();
-    int messageCount();
-    void addListener();
+
+    void doManager();
+
+    void setConnection(ICommunication connection);
 }
