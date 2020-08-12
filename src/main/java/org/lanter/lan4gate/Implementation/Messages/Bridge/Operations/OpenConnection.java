@@ -7,8 +7,8 @@ import org.lanter.lan4gate.Messages.Bridge.BridgeFieldsList;
 public class OpenConnection extends Bridge {
     public OpenConnection() {
         setCommand(BridgeCommand.OpenConnection);
-        addMandatoryFields(BridgeFieldsList.IP);
-        addMandatoryFields(BridgeFieldsList.Port);
+        addOptionalFields(BridgeFieldsList.IP);
+        addOptionalFields(BridgeFieldsList.Port);
         addOptionalFields(BridgeFieldsList.Status);
     }
 }
