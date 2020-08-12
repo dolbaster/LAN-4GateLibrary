@@ -332,6 +332,7 @@ public class Lan4Gate implements Runnable {
 
         if(mBridge != null) {
             try {
+                mBridge.setConnection(mCommunication);
                 mBridge.start();
             } catch (IOException ignored) {
             }
