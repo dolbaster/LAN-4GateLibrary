@@ -179,16 +179,13 @@ public class BridgeManager implements IBridgeManager {
     }
     private void readData(SelectionKey key) throws IOException {
         SocketChannel channel1 = (SocketChannel) key.channel();
-        ByteBuffer buf = ByteBuffer.allocate(65535);
+        ByteBuffer buf = ByteBuffer.allocate(2048);
         int bytes = channel1.read(buf);
-        if(bytes != -1)
-        {
+        if(bytes > 0) {
             buf.flip();
             ByteBuffer result = ByteBuffer.wrap(buf.array(), 0, bytes).slice();
             sendDataExchange(result, (int)key.attachment());
-        }
-        else
-        {
+        } else if (bytes < 0) {
             closeClientConnection(key);
         }
         buf.clear();
