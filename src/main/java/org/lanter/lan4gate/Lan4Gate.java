@@ -49,23 +49,14 @@ public class Lan4Gate implements Runnable {
         mEcrNumber = ecrNumber;
     }
 
-    public void enableBridge() throws RuntimeException {
+    public void setBridgeManager(IBridgeManager bridge) throws RuntimeException {
         if(!isStarted()) {
-            if (mBridge == null) {
-                mBridge = BridgeManagerFactory.getManager();
-            }
+            mBridge = bridge;
         } else {
             throw new RuntimeException("Stop Lan4Gate before enable bridge");
         }
     }
 
-    public void disableBridge() throws RuntimeException {
-        if(!isStarted()) {
-
-        } else {
-            throw new RuntimeException("Stop Lan4Gate before disable bridge");
-        }
-    }
     public void setCommunication(ICommunication communication) throws RuntimeException {
         if(!isStarted()) {
             mCommunication = communication;

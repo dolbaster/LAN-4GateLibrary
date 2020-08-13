@@ -87,7 +87,7 @@ public class BridgeManager implements IBridgeManager {
             Set<SelectionKey> keys = m_ConnectionSelector.selectedKeys();
             Iterator<SelectionKey> iterator = keys.iterator();
             while (iterator.hasNext()) {
-                SelectionKey key = (SelectionKey) iterator.next();
+                SelectionKey key = iterator.next();
                 try
                 {
                     if (key.isReadable()) {
