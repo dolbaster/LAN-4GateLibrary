@@ -27,80 +27,118 @@ public class JSONResponseBuilder {
         }
     }
     private static void addFields(JSONObject object, final Set<ResponseFieldsList> fields, IResponse response) throws JSONException {
-        /*if(fields != null && object != null) {
+        if(fields != null && object != null) {
             for (ResponseFieldsList field : fields) {
                 switch (field)
                 {
-                    case EcrNumber:{
-                        object.put(field.getString(), response.getEcrNumber());
+                    case EcrNumber:
                         break;
-                    }
-                    case EcrMerchantNumber:{
-                        object.put(field.getString(), response.getEcrMerchantNumber());
+                    case EcrMerchantNumber:
                         break;
-                    }
-                    case OperationCode:{
-                        object.put(field.getString(), response.getOperationCode().getNumber());
+                    case OperationCode:
                         break;
-                    }
-                    case Amount:{
-                        object.put(field.getString(), response.getAmount());
+                    case OriginalOperationCode:
                         break;
-                    }
-                    case PartialAmount: {
-                        object.put(field.getString(), response.getPartialAmount());
+                    case TotalAmount:
                         break;
-                    }
-                    case TipsAmount:{
-                        object.put(field.getString(), response.getTipsAmount());
+                    case PartialAmount:
                         break;
-                    }
-                    case CashbackAmount:{
-                        object.put(field.getString(), response.getCashbackAmount());
+                    case AcquirerFeeAmount:
                         break;
-                    }
-                    case CurrencyCode:{
-                        object.put(field.getString(), String.valueOf(response.getCurrencyCode()));
+                    case TerminalFeeAmount:
                         break;
-                    }
-                    case RRN:{
-                        object.put(field.getString(), response.getRRN());
+                    case TipsAmount:
                         break;
-                    }
-                    case AuthCode:{
-                        object.put(field.getString(), response.getAuthCode());
+                    case CurrencyCode:
                         break;
-                    }
-                    case ReceiptReference:{
-                        object.put(field.getString(), response.getReceiptReference());
+                    case ReceiptReference:
                         break;
-                    }
-                    case TransactionID:{
-                        object.put(field.getString(), response.getTransactionID());
+                    case RRN:
                         break;
-                    }
-                    case CardDataEnc:{
-                        object.put(field.getString(), response.getCardDataEnc());
+                    case Status:
                         break;
-                    }
-                    case OpenTags:{
-                        object.put(field.getString(), response.getOpenTags());
+                    case OriginalOperationStatus:
                         break;
-                    }
-                    case EncTags:{
-                        object.put(field.getString(), response.getEncTags());
+                    case TransDateTime:
                         break;
-                    }
-                    case ProviderCode:{
-                        object.put(field.getString(), response.getProviderCode());
+                    case TerminalDateTime:
                         break;
-                    }
-                    case AdditionalInfo:{
-                        object.put(field.getString(), response.getAdditionalInfo());
+                    case CardPAN:
                         break;
-                    }
+                    case ExpireDate:
+                        break;
+                    case CardholderName:
+                        break;
+                    case CardholderAuthMethod:
+                        break;
+                    case AuthCode:
+                        break;
+                    case ResponseCode:
+                        break;
+                    case ResponseText:
+                        break;
+                    case STAN:
+                        break;
+                    case TransactionID:
+                        break;
+                    case TerminalID:
+                        break;
+                    case CardEmvAid:
+                        break;
+                    case CardAppName:
+                        break;
+                    case CardInputMethod:
+                        break;
+                    case IssuerName:
+                        break;
+                    case AdditionalInfo:
+                        break;
+                    case CardData:
+                        break;
+                    case CardDataEnc:
+                        break;
+                    case MerchantId:
+                        break;
+                    case TVR:
+                        break;
+                    case TSI:
+                        break;
+                    case TC:
+                        break;
+                    case CID:
+                        break;
+                    case KVR:
+                        break;
+                    case CDAResult:
+                        break;
+                    case SalesCount:
+                        break;
+                    case VoidCount:
+                        break;
+                    case RefundCount:
+                        break;
+                    case SalesArray:
+                        break;
+                    case VoidArray:
+                        break;
+                    case RefundArray:
+                        break;
+                    case CardPANHash:
+                        break;
+                    case ReceiptLine1:
+                        break;
+                    case ReceiptLine2:
+                        break;
+                    case ReceiptLine3:
+                        break;
+                    case ReceiptLine4:
+                        break;
+                    case ReceiptLine5:
+                        break;
                 }
             }
-        }*/
+        }
+
+
     }
 }

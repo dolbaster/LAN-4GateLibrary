@@ -197,12 +197,9 @@ public class SingleConnectionTCPServer implements ICommunication {
             buf.clear();
             bytes = channel.read(buf);
         }
-        if(bytes != -1)
-        {
+        if(bytes  != -1) {
             mReceivedData.offer(ByteBuffer.wrap(outputStream.toByteArray()));
-        }
-        else
-        {
+        } else {
             closeClientConnection(key);
         }
     }
