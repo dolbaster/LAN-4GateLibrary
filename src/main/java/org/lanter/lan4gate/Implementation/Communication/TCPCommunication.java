@@ -1,5 +1,9 @@
 package org.lanter.lan4gate.Implementation.Communication;
 
+import android.util.Log;
+
+import org.lanter.lan4gate.STUB_LoggingTAG;
+
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
@@ -55,6 +59,7 @@ public class TCPCommunication {
     }
     public void startMonitoring()
     {
+        Log.i(STUB_LoggingTAG.getTag(), "TCPCommunication. Start monitoring");
         if(mMonitoringThread == null)
         {
             mMonitoringThread = new Thread(new Runnable() {
@@ -80,6 +85,7 @@ public class TCPCommunication {
     }
     public void stopMonitoring()
     {
+        Log.i(STUB_LoggingTAG.getTag(), "TCPCommunication. Stop monitoring");
         mMonitoringThread.interrupt();
         mMonitoringThread = null;
     }
@@ -137,6 +143,7 @@ public class TCPCommunication {
     }
     private void runSelector() throws IOException
     {
+        Log.i(STUB_LoggingTAG.getTag(), "TCPCommunication. Run selector");
         notifyCommunicationStarted();
         while(!Thread.currentThread().isInterrupted())
         {
@@ -197,13 +204,19 @@ public class TCPCommunication {
     {
         if(buffer != null && key != null)
         {
-            ((SocketChannel) key.channel()).write(buffer);
+            int wrote = ((SocketChannel) key.channel()).write(buffer);
+
+            Log.i(STUB_LoggingTAG.getTag(), "TCPCommunication. Bytes wrote = " + wrote);
         }
     }
     private ByteBuffer extractData(SelectionKey key) throws IOException
     {
         ByteBuffer buffer = mDataForSend.peek();
         mDataForSend.poll();
+
+        if(buffer != null) {
+            Log.i(STUB_LoggingTAG.getTag(), "TCPCommunication. Buffer for send extracted");
+        }
         return buffer;
     }
     private SelectionKey registerChannelFromServer(SocketChannel channel) throws IOException
@@ -247,7 +260,9 @@ public class TCPCommunication {
         }
         if(bytes != -1)
         {
-            return  builder.toString();
+            String message = builder.toString();
+            Log.i(STUB_LoggingTAG.getTag(), "TCPCommunication. Message received = " + message);
+            return  message;
         }
         else
         {

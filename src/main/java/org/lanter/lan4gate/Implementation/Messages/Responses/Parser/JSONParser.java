@@ -1,6 +1,7 @@
 package org.lanter.lan4gate.Implementation.Messages.Responses.Parser;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.lanter.lan4gate.IResponse;
 import org.lanter.lan4gate.Implementation.Messages.Fields.ClassFieldValuesList;
@@ -29,7 +30,12 @@ public class JSONParser {
     public boolean parse(String json) {
         boolean result = false;
         if(json != null && !json.isEmpty()) {
-            JSONObject root = new JSONObject(json);
+            JSONObject root = null;
+            try {
+                root = new JSONObject(json);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
             if (checkRootFields(root)) {
                 JSONObject objectField = getObjectField(root);
                 if(mType == ClassFieldValuesList.Response) {
@@ -653,17 +659,19 @@ public class JSONParser {
     }
     private Set<IResponse> parseArray(String arrayName, JSONObject objectField) {
         Set<IResponse> array = new HashSet<>();
-        if(objectField.has(arrayName)){
-            JSONArray jsonArray = objectField.getJSONArray(arrayName);
-            for(int i = 0; i < jsonArray.length(); i++) {
-                JSONObject currentObject = jsonArray.getJSONObject(i);
-                Response arrayStubOperation = new ArrayStubOperation();
-                getFields(arrayStubOperation.getMandatoryFields(), currentObject, arrayStubOperation);
-                if(arrayStubOperation.checkMandatoryFields()) {
-                    array.add(arrayStubOperation);
+        try {
+            if (objectField.has(arrayName)) {
+                JSONArray jsonArray = objectField.getJSONArray(arrayName);
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject currentObject = jsonArray.getJSONObject(i);
+                    Response arrayStubOperation = new ArrayStubOperation();
+                    getFields(arrayStubOperation.getMandatoryFields(), currentObject, arrayStubOperation);
+                    if (arrayStubOperation.checkMandatoryFields()) {
+                        array.add(arrayStubOperation);
+                    }
                 }
             }
-        }
+        } catch (Exception e) {}
         return array;
     }
 }

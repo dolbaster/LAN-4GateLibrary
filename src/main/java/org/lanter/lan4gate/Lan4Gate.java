@@ -1,5 +1,7 @@
 package org.lanter.lan4gate;
 
+import android.util.Log;
+
 import org.lanter.lan4gate.Implementation.Communication.TCPCommunication;
 import org.lanter.lan4gate.Implementation.Communication.ICommunicationListener;
 import org.lanter.lan4gate.Implementation.Messages.Fields.ClassFieldValuesList;
@@ -31,6 +33,8 @@ public class Lan4Gate implements ICommunicationListener {
     public Lan4Gate(int ecrNumber) {
         mEcrNumber = ecrNumber;
         mTCPCommunication.addCommunicationListener(this);
+
+        Log.i(STUB_LoggingTAG.getTag(), "Lan4Gate created");
     }
 
     /**
@@ -39,6 +43,7 @@ public class Lan4Gate implements ICommunicationListener {
      * @param callback Object, implements interface {@link IResponseCallback}
      */
     public void addResponseCallback(IResponseCallback callback) {
+        Log.i(STUB_LoggingTAG.getTag(), "Lan4Gate addResponseCallback");
         mResponseListeners.add(callback);
     }
 
@@ -48,6 +53,7 @@ public class Lan4Gate implements ICommunicationListener {
      * @param callback Registered {@link IResponseCallback} object
      */
     public void removeResponseCallback(IResponseCallback callback) {
+        Log.i(STUB_LoggingTAG.getTag(), "Lan4Gate removeResponseCallback");
         mResponseListeners.remove(callback);
     }
 
@@ -57,6 +63,7 @@ public class Lan4Gate implements ICommunicationListener {
      * @param callback Object, implements interface {@link ICommunicationCallback}
      */
     public void addCommunicationCallback(ICommunicationCallback callback) {
+        Log.i(STUB_LoggingTAG.getTag(), "Lan4Gate addCommunicationCallback");
         mCommunicationListeners.add(callback);
     }
 
@@ -66,6 +73,7 @@ public class Lan4Gate implements ICommunicationListener {
      * @param callback Registered {@link ICommunicationCallback} object
      */
     public void removeCommunicationCallback(ICommunicationCallback callback) {
+        Log.i(STUB_LoggingTAG.getTag(), "Lan4Gate removeCommunicationCallback");
         mResponseListeners.remove(callback);
     }
 
@@ -75,6 +83,7 @@ public class Lan4Gate implements ICommunicationListener {
      * @param callback Object, implements interface {@link INotificationCallback}
      */
     public void addNotificationCallback(INotificationCallback callback) {
+        Log.i(STUB_LoggingTAG.getTag(), "Lan4Gate addNotificationCallback");
         mNotificationListeners.add(callback);
     }
 
@@ -84,6 +93,7 @@ public class Lan4Gate implements ICommunicationListener {
      * @param callback Registered {@link INotificationCallback} object
      */
     public void removeNotificationCallback(INotificationCallback callback) {
+        Log.i(STUB_LoggingTAG.getTag(), "Lan4Gate removeNotificationCallback");
         mNotificationListeners.remove(callback);
     }
 
@@ -93,6 +103,7 @@ public class Lan4Gate implements ICommunicationListener {
      * @param callback Object, implements interface {@link IErrorCallback}
      */
     public void addErrorCallback(IErrorCallback callback) {
+        Log.i(STUB_LoggingTAG.getTag(), "Lan4Gate addErrorCallback");
         mErrorListeners.add(callback);
     }
 
@@ -102,6 +113,7 @@ public class Lan4Gate implements ICommunicationListener {
      * @param callback Registered {@link IErrorCallback} object
      */
     public void removeErrorCallback(IErrorCallback callback) {
+        Log.i(STUB_LoggingTAG.getTag(), "Lan4Gate removeErrorCallback");
         mErrorListeners.remove(callback);
     }
 
@@ -111,6 +123,7 @@ public class Lan4Gate implements ICommunicationListener {
      * @param port Value in range [0, 65535]
      */
     public void setPort(int port) {
+        Log.i(STUB_LoggingTAG.getTag(), "Lan4Gate setPort");
         mTCPCommunication.setPort(port);
     }
 
@@ -140,6 +153,7 @@ public class Lan4Gate implements ICommunicationListener {
      * After correct start {@link ICommunicationCallback}.communicationStarted() will be called
      */
     public void start() {
+        Log.i(STUB_LoggingTAG.getTag(), "Lan4Gate start");
         mTCPCommunication.startMonitoring();
     }
 
@@ -175,7 +189,10 @@ public class Lan4Gate implements ICommunicationListener {
      * Stop protocol communication.
      * After correct start {@link ICommunicationCallback}.communicationStopped() will be called
      */
-    public void stop() { mTCPCommunication.stopMonitoring(); }
+    public void stop() {
+        Log.i(STUB_LoggingTAG.getTag(), "Lan4Gate stop");
+        mTCPCommunication.stopMonitoring();
+    }
 
     /**
      * Prepare and returns {@link IRequest} object.
@@ -186,6 +203,7 @@ public class Lan4Gate implements ICommunicationListener {
      * @return Prepared object, implements {@link IRequest}
      */
     public IRequest getPreparedRequest(OperationsList operation) {
+        Log.i(STUB_LoggingTAG.getTag(), "Lan4Gate get request " + operation.toString());
         RequestBuilder builder = new RequestBuilder(mEcrNumber);
         return builder.prepareRequest(operation);
     }
@@ -196,6 +214,7 @@ public class Lan4Gate implements ICommunicationListener {
      * @param request Prepared object, implements {@link IRequest}
      */
     public void sendRequest(IRequest request){
+        Log.i(STUB_LoggingTAG.getTag(), "Lan4Gate send request");
         JSONAssembler assembler = new JSONAssembler();
         boolean result = assembler.assemble((Request) request);
         if(result) {
@@ -204,14 +223,17 @@ public class Lan4Gate implements ICommunicationListener {
     }
     @Override
     public void newData(String data) {
+        Log.i(STUB_LoggingTAG.getTag(), "Lan4Gate new data: " + data);
         JSONParser parser = new JSONParser();
         if(parser.parse(data)) {
             if(parser.getType() == ClassFieldValuesList.Response) {
+                Log.i(STUB_LoggingTAG.getTag(), "Lan4Gate response");
                 IResponse response = parser.getResponse();
                 for (IResponseCallback callback : mResponseListeners) {
                     callback.newResponseMessage(response, this);
                 }
             } else if(parser.getType() == ClassFieldValuesList.Notification) {
+                Log.i(STUB_LoggingTAG.getTag(), "Lan4Gate notification");
                 INotification notification = parser.getNotification();
                 for (INotificationCallback callback : mNotificationListeners) {
                     callback.newNotificationMessage(notification, this);
@@ -222,6 +244,7 @@ public class Lan4Gate implements ICommunicationListener {
 
     @Override
     public void communicationStarted() {
+        Log.i(STUB_LoggingTAG.getTag(), "Lan4Gate communication started callback");
         for(ICommunicationCallback callback : mCommunicationListeners) {
             callback.communicationStarted(this);
         }
@@ -229,6 +252,7 @@ public class Lan4Gate implements ICommunicationListener {
 
     @Override
     public void communicationStopped() {
+        Log.i(STUB_LoggingTAG.getTag(), "Lan4Gate communication stopped callback");
         for(ICommunicationCallback callback : mCommunicationListeners) {
             callback.communicationStopped(this);
         }
@@ -236,6 +260,7 @@ public class Lan4Gate implements ICommunicationListener {
 
     @Override
     public void connected() {
+        Log.i(STUB_LoggingTAG.getTag(), "Lan4Gate connected callback");
         for(ICommunicationCallback callback : mCommunicationListeners) {
             callback.connected(this);
         }
@@ -243,6 +268,7 @@ public class Lan4Gate implements ICommunicationListener {
 
     @Override
     public void disconnected() {
+        Log.i(STUB_LoggingTAG.getTag(), "Lan4Gate disconnected callback");
         for(ICommunicationCallback callback : mCommunicationListeners) {
             callback.disconnected(this);
         }
@@ -250,6 +276,7 @@ public class Lan4Gate implements ICommunicationListener {
 
     @Override
     public void errorMessage(String error) {
+        Log.i(STUB_LoggingTAG.getTag(), "Lan4Gate error message callback");
         for(IErrorCallback callback : mErrorListeners) {
             callback.errorMessage(error,this);
         }
@@ -257,6 +284,7 @@ public class Lan4Gate implements ICommunicationListener {
 
     @Override
     public void errorException(Exception exception) {
+        Log.i(STUB_LoggingTAG.getTag(), "Lan4Gate error exception callback");
         for(IErrorCallback callback : mErrorListeners) {
             callback.errorException(exception, this);
         }

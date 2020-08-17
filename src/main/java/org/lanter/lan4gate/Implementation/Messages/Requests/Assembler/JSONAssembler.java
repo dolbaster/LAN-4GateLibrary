@@ -1,10 +1,14 @@
 package org.lanter.lan4gate.Implementation.Messages.Requests.Assembler;
 
+import android.util.Log;
+
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.lanter.lan4gate.Messages.Fields.RequestFieldsList;
 import org.lanter.lan4gate.Implementation.Messages.Fields.RootFields;
 import org.lanter.lan4gate.Implementation.Messages.Fields.ClassFieldValuesList;
 import org.lanter.lan4gate.Implementation.Messages.Requests.Request;
+import org.lanter.lan4gate.STUB_LoggingTAG;
 
 import java.util.Set;
 
@@ -12,12 +16,14 @@ public class JSONAssembler {
     Request mRequest;
     String mJsonString;
     public boolean assemble(Request request) {
+        Log.i(STUB_LoggingTAG.getTag(), "Request assembler. Assemble");
         if(request != null && request.checkMandatoryFields()) {
             mRequest = request;
             JSONObject root = new JSONObject();
             createClassField(root);
             createObjectField(root);
             mJsonString = root.toString();
+            Log.i(STUB_LoggingTAG.getTag(), "Request assembler. Assembled message = " + mJsonString);
             return !mJsonString.isEmpty();
         }
         return false;
@@ -26,20 +32,33 @@ public class JSONAssembler {
         return mJsonString;
     }
     private void createClassField(JSONObject root) {
-        root.put(RootFields.CLASS, ClassFieldValuesList.Request.getString());
+
+        try {
+            root.put(RootFields.CLASS, ClassFieldValuesList.Request.getString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
     private void createObjectField(JSONObject root) {
         JSONObject object = new JSONObject();
         addObjectFields(object);
-        root.put(RootFields.OBJECT, object);
+        try {
+            root.put(RootFields.OBJECT, object);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
     private void addObjectFields(JSONObject object) {
         if(mRequest != null) {
-            addFields(object, mRequest.getMandatoryFields());
-            addFields(object, mRequest.getOptionalFields());
+            try {
+                addFields(object, mRequest.getMandatoryFields());
+                addFields(object, mRequest.getOptionalFields());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
     }
-    private void addFields(JSONObject object, Set<RequestFieldsList> fields) {
+    private void addFields(JSONObject object, Set<RequestFieldsList> fields) throws JSONException {
         if(fields != null && object != null) {
             for (RequestFieldsList field : fields) {
                 switch (field)
