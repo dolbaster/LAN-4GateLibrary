@@ -26,6 +26,7 @@ import java.util.Set;
  * This class encapsulates ECR protocol LAN-4Gate
  */
 public class Lan4Gate implements Runnable {
+    private final Set<IRequestCallback> mRequestListeners = new HashSet<>();
     private final Set<IResponseCallback> mResponseListeners = new HashSet<>();
     private final Set<INotificationCallback> mNotificationListeners = new HashSet<>();
     private final Set<ICommunicationCallback> mCommunicationListeners = new HashSet<>();
@@ -64,6 +65,14 @@ public class Lan4Gate implements Runnable {
             throw new RuntimeException("Stop Lan4Gate before change communication");
         }
 
+    }
+    /**
+     * Добавляет слушателя {@link IRequestCallback}
+     * йцукенгшщзхъфывапролджэячсмитьбю
+     * @param callback Объект, реализующий интерфейс {@link IRequestCallback}
+     */
+    public void addRequestCallback(IRequestCallback callback) {
+        mRequestListeners.add(callback);
     }
     /**
      * Add listener for {@link IResponseCallback}
