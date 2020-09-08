@@ -11,6 +11,9 @@ import org.lanter.lan4gate.Implementation.Messages.Requests.Operations.VoidOpera
 import org.lanter.lan4gate.Messages.OperationsList;
 
 public class RequestFactory {
+    public static IRequest getRequest(OperationsList operation) {
+        return getRequest(operation, 0);
+    }
     public static IRequest getRequest(OperationsList operation, int ecrNumber) {
         Request result = null;
         switch (operation) {
@@ -155,7 +158,7 @@ public class RequestFactory {
                 result = new ClearAllJournals();
                 break;
         }
-        if(result != null) {
+        if(result != null && ecrNumber > 0) {
             result.setEcrNumber(ecrNumber);
         }
         return result;

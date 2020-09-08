@@ -11,10 +11,10 @@ import org.lanter.lan4gate.Implementation.Messages.Response.Operations.VoidOpera
 import org.lanter.lan4gate.Implementation.Messages.Response.Operations.VoidOperations.VoidPreAuth;
 
 public class ResponseFactory {
-    public IResponse getResponse(OperationsList operation) {
+    public static IResponse getResponse(OperationsList operation) {
         return getResponse(operation, OperationsList.NoOperation);
     }
-    public IResponse getResponse(OperationsList operation, OperationsList originalOperation) {
+    public static IResponse getResponse(OperationsList operation, OperationsList originalOperation) {
         Response result = null;
         switch (operation) {
             case Sale: {

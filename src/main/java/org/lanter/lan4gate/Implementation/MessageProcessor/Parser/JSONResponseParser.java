@@ -25,8 +25,7 @@ public class JSONResponseParser {
         return result;
     }
     private static IResponse createResponse(int operationCode) {
-        ResponseFactory builder = new ResponseFactory();
-        return builder.getResponse(OperationsList.getValue(operationCode));
+        return ResponseFactory.getResponse(OperationsList.getValue(operationCode));
     }
 
     private static int getOperationCode(JSONObject objectField) {

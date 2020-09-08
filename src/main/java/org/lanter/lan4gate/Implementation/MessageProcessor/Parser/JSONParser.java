@@ -7,15 +7,27 @@ import org.lanter.lan4gate.Messages.Bridge.IBridge;
 import org.lanter.lan4gate.Messages.Notification.INotification;
 import org.lanter.lan4gate.Implementation.MessageProcessor.Fields.ClassFieldValuesList;
 import org.lanter.lan4gate.Implementation.MessageProcessor.Fields.RootFields;
+import org.lanter.lan4gate.Messages.Request.IRequest;
 import org.lanter.lan4gate.Messages.Response.IResponse;
 
 import java.util.ArrayDeque;
 import java.util.Queue;
 
 public class JSONParser implements IMessageParser {
+    private final Queue<IRequest> mRequest = new ArrayDeque<>();
     private final Queue<IResponse> mResponse = new ArrayDeque<>();
     private final Queue<INotification> mNotification = new ArrayDeque<>();
     private final Queue<IBridge> mBridge = new ArrayDeque<>();
+
+    @Override
+    public IRequest getRequest() {
+        return mRequest.poll();
+    }
+
+    @Override
+    public int getRequestCount() {
+        return mRequest.size();
+    }
 
     @Override
     public IResponse getResponse() {
@@ -58,6 +70,10 @@ public class JSONParser implements IMessageParser {
 
                     switch (currentType) {
                         case Request:
+                            IRequest request = JSONRequestParser.parse(objectField);
+                            if (request != null && mRequest.offer(request)) {
+                                result = currentType;
+                            }
                             break;
                         case Response:
                             IResponse response = JSONResponseParser.parse(objectField);

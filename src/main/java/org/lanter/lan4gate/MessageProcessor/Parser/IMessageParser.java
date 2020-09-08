@@ -2,12 +2,27 @@ package org.lanter.lan4gate.MessageProcessor.Parser;
 
 import org.lanter.lan4gate.Messages.Bridge.IBridge;
 import org.lanter.lan4gate.Messages.Notification.INotification;
+import org.lanter.lan4gate.Messages.Request.IRequest;
 import org.lanter.lan4gate.Messages.Response.IResponse;
 
 /**
  * The interface Message parser.
  */
 public interface IMessageParser {
+
+    /**
+     * Gets request.
+     *
+     * @return the request
+     */
+    IRequest getRequest();
+
+    /**
+     * Gets request count.
+     *
+     * @return the request count
+     */
+    int getRequestCount();
 
     /**
      * Gets response.

@@ -15,6 +15,7 @@ import org.lanter.lan4gate.Implementation.Messages.Requests.Request;
 import org.lanter.lan4gate.Messages.Request.IRequest;
 import org.lanter.lan4gate.Messages.Request.RequestFactory;
 import org.lanter.lan4gate.Messages.Response.IResponse;
+import org.lanter.lan4gate.Messages.Response.ResponseFactory;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -68,7 +69,7 @@ public class Lan4Gate implements Runnable {
     }
     /**
      * Добавляет слушателя {@link IRequestCallback}
-     * йцукенгшщзхъфывапролджэячсмитьбю
+     *
      * @param callback Объект, реализующий интерфейс {@link IRequestCallback}
      */
     public void addRequestCallback(IRequestCallback callback) {
@@ -245,6 +246,24 @@ public class Lan4Gate implements Runnable {
         return RequestFactory.getRequest(operation, mEcrNumber);
     }
 
+    public IResponse getPreparedResponse(OperationsList operation) {
+        IResponse result = ResponseFactory.getResponse(operation);
+        if(result != null) {
+            result.setEcrNumber(mEcrNumber);
+        }
+        return result;
+
+    }
+
+    public void sendResponse(IResponse response) {
+        IMessageBuilder builder = MessageBuilderFactory.getBuilder();
+        ByteBuffer result = builder.buildMessage(response);
+        if(result != null) {
+            try {
+                mCommunication.sendData(result);
+            } catch (Exception ignored) {}
+        }
+    }
     /**
      * Send new request to terminal
      *
@@ -252,7 +271,17 @@ public class Lan4Gate implements Runnable {
      */
     public void sendRequest(IRequest request){
         IMessageBuilder builder = MessageBuilderFactory.getBuilder();
-        ByteBuffer result = builder.buildMessage((Request) request);
+        ByteBuffer result = builder.buildMessage(request);
+        if(result != null) {
+            try {
+                mCommunication.sendData(result);
+            } catch (Exception ignored) {}
+        }
+    }
+
+    public void sendNotification(INotification notification) {
+        IMessageBuilder builder = MessageBuilderFactory.getBuilder();
+        ByteBuffer result = builder.buildMessage(notification);
         if(result != null) {
             try {
                 mCommunication.sendData(result);
@@ -267,6 +296,12 @@ public class Lan4Gate implements Runnable {
             IMessageParser parser = MessageParserFactory.getParser();
 
             switch (parser.parse(convertedData)) {
+                case Request:
+                    IRequest request = parser.getRequest();
+                    for (IRequestCallback callback : mRequestListeners) {
+                        callback.newRequestMessage(request, this);
+                    }
+                    break;
                 case Response:
                     IResponse response = parser.getResponse();
                     for (IResponseCallback callback : mResponseListeners) {
