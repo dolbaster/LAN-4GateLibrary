@@ -34,12 +34,14 @@ public class JSONMessageBuilder implements IMessageBuilder {
     @Override
     public ByteBuffer buildMessage(IResponse response) {
         ByteBuffer result = null;
-        /*if(response != null && response.checkMandatoryFields()) {
-            JSONObject root = new JSONObject();
-            if(createClassField(root, ClassFieldValuesList.Response) &&  createObjectField(root, response)) {
-                result = root.toString();
+        try {
+            if (response != null && response.checkMandatoryFields()) {
+                JSONObject root = new JSONObject();
+                if (createClassField(root, ClassFieldValuesList.Response) && createObjectField(root, response)) {
+                    result = convertToByteBuffer(root.toString());
+                }
             }
-        }*/
+        } catch (JSONException ignored) {}
         return result;
     }
 
@@ -76,8 +78,7 @@ public class JSONMessageBuilder implements IMessageBuilder {
 
 
     private boolean createObjectField(JSONObject root, IResponse response) throws JSONException {
-        //JSONReBuilder.createRequestObject(root, request);
-        return false;
+        return JSONResponseBuilder.createObject(root, response);
     }
 
     private boolean createObjectField(JSONObject root, IBridge bridge) throws JSONException {
