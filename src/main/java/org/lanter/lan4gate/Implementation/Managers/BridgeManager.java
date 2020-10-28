@@ -154,7 +154,7 @@ public class BridgeManager implements IBridgeManager {
         if(m_DataForSend.containsKey(result.getLinkID())) {
             ByteBuffer buf = result.getData();
             if(buf != null) {
-                m_DataForSend.get(result.getLinkID()).offer(buf);
+                m_DataForSend.get(result.getLinkID()).offer(decodeBase64(buf));
             }
         }
     }
@@ -207,7 +207,7 @@ public class BridgeManager implements IBridgeManager {
         {
             IBridge result = BridgeFactory.getBridge(BridgeCommand.DataExchange);
             result.setLinkID(linkID);
-            result.setData(buffer.slice());
+            result.setData(encodeBase64(buffer.slice()));
 
             IMessageBuilder builder = MessageBuilderFactory.getBuilder();
 
@@ -274,11 +274,14 @@ public class BridgeManager implements IBridgeManager {
     private void setRWInterest(SelectionKey key) {
         key.interestOps(SelectionKey.OP_READ | SelectionKey.OP_WRITE);
     }
-    private String encodeBase64(ByteBuffer buffer) {
-        return Base64.encodeToString(buffer.array(), Base64.NO_WRAP);
+    private ByteBuffer encodeBase64(ByteBuffer buffer) {
+        return ByteBuffer.wrap(Base64.encode(buffer.array(), Base64.NO_WRAP)).slice();
     }
-    private ByteBuffer decodeBase64(String data) {
-        return ByteBuffer.wrap(Base64.decode(data, Base64.NO_WRAP));
+    private ByteBuffer decodeBase64(ByteBuffer data) {
+        byte [] bytes = new byte[data.remaining()];
+
+        data.get(bytes, 0, bytes.length);
+        return ByteBuffer.wrap(Base64.decode(bytes, Base64.NO_WRAP));
     }
     private void sendData(SelectionKey key, ByteBuffer message) throws IOException {
         if(key != null && message != null)
