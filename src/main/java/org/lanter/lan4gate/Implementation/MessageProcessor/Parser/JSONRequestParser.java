@@ -42,6 +42,9 @@ public class JSONRequestParser {
                         getFieldEcrMerchantNumber(objectField, requestObject);
                         break;
                     }
+                    case Amount:
+                        getFieldAmount(objectField, requestObject);
+                        break;
                     case PartialAmount: {
                         getFieldPartialAmount(objectField, requestObject);
                         break;
@@ -50,6 +53,8 @@ public class JSONRequestParser {
                         getFieldTipsAmount(objectField, requestObject);
                         break;
                     }
+                    case CashbackAmount:
+                        break;
                     case CurrencyCode: {
                         getFieldCurrencyCode(objectField, requestObject);
                         break;
@@ -70,6 +75,15 @@ public class JSONRequestParser {
                         getFieldTransactionID(objectField, requestObject);
                         break;
                     }
+                    case OpenTags:
+                        getFieldOpenTags(objectField, requestObject);
+                        break;
+                    case EncTags:
+                        getFieldEncTags(objectField, requestObject);
+                        break;
+                    case ProviderCode:
+                        getFieldProviderCode(objectField, requestObject);
+                        break;
                     case AdditionalInfo: {
                         getFieldAdditionalInfo(objectField, requestObject);
                         break;
@@ -94,6 +108,13 @@ public class JSONRequestParser {
         if(ecrMerchantNumber != -1)
         {
             requestObject.setEcrMerchantNumber(ecrMerchantNumber);
+        }
+    }
+    private static void getFieldAmount(JSONObject objectField, IRequest requestObject) {
+        long amount = objectField.optLong(RequestFieldsList.Amount.getString(), -1);
+        if(amount != -1)
+        {
+            requestObject.setAmount(amount);
         }
     }
     private static void getFieldPartialAmount(JSONObject objectField, IRequest requestObject) {
@@ -145,6 +166,31 @@ public class JSONRequestParser {
             requestObject.setTransactionID(transactionID);
         }
     }
+
+    private static void getFieldOpenTags(JSONObject objectField, IRequest requestObject) {
+        String openTags = objectField.optString(RequestFieldsList.OpenTags.getString());
+        if(!openTags.isEmpty())
+        {
+            requestObject.setOpenTags(openTags);
+        }
+    }
+
+    private static void getFieldEncTags(JSONObject objectField, IRequest requestObject) {
+        String encTags = objectField.optString(RequestFieldsList.EncTags.getString());
+        if(!encTags.isEmpty())
+        {
+            requestObject.setEncTags(encTags);
+        }
+    }
+
+    private static void getFieldProviderCode(JSONObject objectField, IRequest requestObject) {
+        String providerCode = objectField.optString(RequestFieldsList.ProviderCode.getString());
+        if(!providerCode.isEmpty())
+        {
+            requestObject.setProviderCode(providerCode);
+        }
+    }
+
     private static void getFieldAdditionalInfo(JSONObject objectField, IRequest requestObject) {
         String additionalInfo = objectField.optString(RequestFieldsList.AdditionalInfo.getString());
         if(!additionalInfo.isEmpty())
