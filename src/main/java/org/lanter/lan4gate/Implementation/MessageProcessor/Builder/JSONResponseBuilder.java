@@ -40,11 +40,15 @@ public class JSONResponseBuilder {
                         break;
                     }
                     case OperationCode:{
-                        object.put(field.getString(), response.getOperationCode().getNumber());
+                        if(response.getOperationCode() != null) {
+                            object.put(field.getString(), response.getOperationCode().getNumber());
+                        }
                         break;
                     }
                     case OriginalOperationCode:
-                        object.put(field.getString(), response.getOriginalOperationCode().getNumber());
+                        if(response.getOriginalOperationCode() != null) {
+                            object.put(field.getString(), response.getOriginalOperationCode().getNumber());
+                        }
                         break;
                     case TotalAmount:
                         object.put(field.getString(), response.getTotalAmount());
@@ -74,7 +78,9 @@ public class JSONResponseBuilder {
                         object.put(field.getString(), response.getStatus().getNumber());
                         break;
                     case OriginalOperationStatus:
-                        object.put(field.getString(), response.getOriginalOperationStatus().getNumber());
+                        if(response.getOriginalOperationStatus() != null) {
+                            object.put(field.getString(), response.getOriginalOperationStatus().getNumber());
+                        }
                         break;
                     case TransDateTime:
                         object.put(field.getString(), response.getTransDateTime());
@@ -92,7 +98,9 @@ public class JSONResponseBuilder {
                         object.put(field.getString(), response.getCardholderName());
                         break;
                     case CardholderAuthMethod:
-                        object.put(field.getString(), response.getCardholderAuthMethod().getNumber());
+                        if(response.getCardholderAuthMethod() != null) {
+                            object.put(field.getString(), response.getCardholderAuthMethod().getNumber());
+                        }
                         break;
                     case AuthCode:
                         object.put(field.getString(), response.getAuthCode());
@@ -118,7 +126,9 @@ public class JSONResponseBuilder {
                         object.put(field.getString(), response.getCardAppName());
                         break;
                     case CardInputMethod:
-                        object.put(field.getString(), response.getCardInputMethod().getNumber());
+                        if(response.getCardInputMethod() != null) {
+                            object.put(field.getString(), response.getCardInputMethod().getNumber());
+                        }
                         break;
                     case IssuerName:
                         object.put(field.getString(), response.getIssuerName());
