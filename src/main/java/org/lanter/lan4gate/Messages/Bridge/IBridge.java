@@ -92,14 +92,14 @@ public interface IBridge {
      *
      * @return the data
      */
-    ByteBuffer getData();
+    byte[] getData();
 
     /**
      * Sets data.
      *
      * @param data the data
      */
-    void setData(ByteBuffer data);
+    void setData(byte[] data);
 
     /**
      * Gets status.

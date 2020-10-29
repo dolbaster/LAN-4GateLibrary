@@ -98,7 +98,7 @@ public class JSONBridgeParser {
                 //In Java 7 Base64 encoder/decoder ia unavailable.
                 //This is not uses only in Android.
                 //Use apache codecs
-                ByteBuffer decodedData = ByteBuffer.wrap(Base64.decode(base64String, Base64.NO_WRAP)).slice();
+                byte[] decodedData = Base64.decode(base64String, Base64.NO_WRAP);
 
                 bridge.setData(decodedData);
             }

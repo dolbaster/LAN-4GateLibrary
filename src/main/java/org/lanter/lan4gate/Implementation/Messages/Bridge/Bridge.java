@@ -5,7 +5,6 @@ import org.lanter.lan4gate.Messages.Bridge.BridgeFieldsList;
 import org.lanter.lan4gate.Messages.Bridge.BridgeStatus;
 import org.lanter.lan4gate.Messages.Bridge.IBridge;
 
-import java.nio.ByteBuffer;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -14,7 +13,7 @@ public class Bridge implements IBridge {
     private int mLinkID;
     private String mIP;
     private int mPort;
-    private ByteBuffer mData;
+    private byte[] mData;
     private BridgeStatus mStatus;
 
     private final Set<BridgeFieldsList> mFields = new HashSet<>();
@@ -98,13 +97,13 @@ public class Bridge implements IBridge {
     }
 
     @Override
-    public ByteBuffer getData() {
+    public byte[] getData() {
 
         return mData;
     }
 
     @Override
-    public void setData(ByteBuffer data) {
+    public void setData(byte[] data) {
         mFields.add(BridgeFieldsList.Data);
         mData = data;
     }

@@ -40,7 +40,7 @@ public class JSONBridgeBuilder {
                         object.put(field.getString(), bridge.getLinkID());
                         break;
                     case Data:
-                        String encoded = Base64.encodeToString(bridge.getData().array(), Base64.NO_WRAP);
+                        String encoded = Base64.encodeToString(bridge.getData(), Base64.NO_WRAP);
                         object.put(field.getString(), encoded);
                         break;
                     case IP:

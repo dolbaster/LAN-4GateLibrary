@@ -53,7 +53,7 @@ public class BridgeManager implements IBridgeManager {
     private ICommunication mConnection;
     private Selector m_ConnectionSelector;
     private Map<Integer, SelectionKey> m_ConnectionMap = new HashMap<>();
-    private Map<Integer, ConcurrentLinkedQueue<ByteBuffer>> m_DataForSend = new HashMap<>();
+    private Map<Integer, ConcurrentLinkedQueue<byte[]>> m_DataForSend = new HashMap<>();
 
     @Override
     public void start() throws IOException {
@@ -152,9 +152,9 @@ public class BridgeManager implements IBridgeManager {
     }
     private void addData(IBridge result) {
         if(m_DataForSend.containsKey(result.getLinkID())) {
-            ByteBuffer buf = result.getData();
+            byte[] buf = result.getData();
             if(buf != null) {
-                m_DataForSend.get(result.getLinkID()).offer(decodeBase64(buf));
+                m_DataForSend.get(result.getLinkID()).offer(buf);
             }
         }
     }
@@ -183,7 +183,8 @@ public class BridgeManager implements IBridgeManager {
         int bytes = channel1.read(buf);
         if(bytes > 0) {
             buf.flip();
-            ByteBuffer result = ByteBuffer.wrap(buf.array(), 0, bytes).slice();
+            byte[] result = new byte[bytes];
+            buf.get(result, 0, bytes);
             sendDataExchange(result, (int)key.attachment());
         } else if (bytes < 0) {
             closeClientConnection(key);
@@ -202,12 +203,12 @@ public class BridgeManager implements IBridgeManager {
             mConnection.sendData(builder.buildMessage(result));
         }
     }
-    private void sendDataExchange(ByteBuffer buffer, int linkID) throws IOException {
+    private void sendDataExchange(byte[] buffer, int linkID) throws IOException {
         if(mConnection != null)
         {
             IBridge result = BridgeFactory.getBridge(BridgeCommand.DataExchange);
             result.setLinkID(linkID);
-            result.setData(encodeBase64(buffer.slice()));
+            result.setData(buffer);
 
             IMessageBuilder builder = MessageBuilderFactory.getBuilder();
 
@@ -259,7 +260,7 @@ public class BridgeManager implements IBridgeManager {
 
         setRWInterest(key);
         m_ConnectionMap.put(info.getLinkId(), key);
-        m_DataForSend.put(info.getLinkId(), new ConcurrentLinkedQueue<ByteBuffer>());
+        m_DataForSend.put(info.getLinkId(), new ConcurrentLinkedQueue<byte[]>());
         if(mConnection != null)
         {
             IBridge result = BridgeFactory.getBridge(BridgeCommand.OpenConnection);
@@ -274,32 +275,23 @@ public class BridgeManager implements IBridgeManager {
     private void setRWInterest(SelectionKey key) {
         key.interestOps(SelectionKey.OP_READ | SelectionKey.OP_WRITE);
     }
-    private ByteBuffer encodeBase64(ByteBuffer buffer) {
-        return ByteBuffer.wrap(Base64.encode(buffer.array(), Base64.NO_WRAP)).slice();
-    }
-    private ByteBuffer decodeBase64(ByteBuffer data) {
-        byte [] bytes = new byte[data.remaining()];
-
-        data.get(bytes, 0, bytes.length);
-        return ByteBuffer.wrap(Base64.decode(bytes, Base64.NO_WRAP));
-    }
-    private void sendData(SelectionKey key, ByteBuffer message) throws IOException {
+    private void sendData(SelectionKey key, byte[] message) throws IOException {
         if(key != null && message != null)
         {
             SocketChannel channel = (SocketChannel)key.channel();
-            channel.write(message);
+            channel.write(ByteBuffer.wrap(message));
         }
     }
-    private ByteBuffer extractData(SelectionKey key) throws IOException {
+    private byte[] extractData(SelectionKey key) throws IOException {
         if(key.attachment() != null && key.attachment() instanceof Integer)
         {
             Integer ecrNumber = (Integer)key.attachment();
             if(m_DataForSend.containsKey(ecrNumber))
             {
-                ConcurrentLinkedQueue<ByteBuffer> data = m_DataForSend.get(ecrNumber);
+                ConcurrentLinkedQueue<byte[]> data = m_DataForSend.get(ecrNumber);
                 if(data != null && !data.isEmpty())
                 {
-                    ByteBuffer buffer = data.peek();
+                    byte[] buffer = data.peek();
                     data.poll();
                     return buffer;
                 }
