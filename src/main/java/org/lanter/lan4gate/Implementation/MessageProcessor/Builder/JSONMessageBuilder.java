@@ -46,7 +46,16 @@ public class JSONMessageBuilder implements IMessageBuilder {
 
     @Override
     public byte[] buildMessage(INotification notification) {
-        return null;
+        byte[] result = null;
+        try {
+            if (notification != null && notification.getNotificationCode() != null) {
+                JSONObject root = new JSONObject();
+                if (createClassField(root, ClassFieldValuesList.Notification) && createObjectField(root, notification)) {
+                    result = convertToByteArray(root.toString());
+                }
+            }
+        } catch (JSONException ignored) {}
+        return result;
     }
 
     @Override
@@ -78,6 +87,10 @@ public class JSONMessageBuilder implements IMessageBuilder {
 
     private boolean createObjectField(JSONObject root, IResponse response) throws JSONException {
         return JSONResponseBuilder.createObject(root, response);
+    }
+
+    private boolean createObjectField(JSONObject root, INotification notification) throws JSONException {
+        return JSONNotificationBuilder.createObject(root, notification);
     }
 
     private boolean createObjectField(JSONObject root, IBridge bridge) throws JSONException {

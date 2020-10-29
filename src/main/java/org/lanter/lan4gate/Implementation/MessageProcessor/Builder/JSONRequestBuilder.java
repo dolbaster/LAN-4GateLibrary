@@ -2,6 +2,7 @@ package org.lanter.lan4gate.Implementation.MessageProcessor.Builder;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.lanter.lan4gate.Messages.OperationsList;
 import org.lanter.lan4gate.Messages.Request.IRequest;
 import org.lanter.lan4gate.Implementation.MessageProcessor.Fields.RootFields;
 import org.lanter.lan4gate.Messages.Request.RequestFieldsList;
@@ -32,35 +33,51 @@ public class JSONRequestBuilder {
                 switch (field)
                 {
                     case EcrNumber:{
-                        object.put(field.getString(), request.getEcrNumber());
+                        if(request.getEcrNumber() > 0) {
+                            object.put(field.getString(), request.getEcrNumber());
+                        }
                         break;
                     }
                     case EcrMerchantNumber:{
-                        object.put(field.getString(), request.getEcrMerchantNumber());
+                        if(request.getEcrMerchantNumber() > 0) {
+                            object.put(field.getString(), request.getEcrMerchantNumber());
+                        }
                         break;
                     }
                     case OperationCode:{
-                        object.put(field.getString(), request.getOperationCode().getNumber());
+                        if(request.getOperationCode() != null && request.getOperationCode() != OperationsList.NoOperation) {
+                            object.put(field.getString(), request.getOperationCode().getNumber());
+                        }
                         break;
                     }
                     case Amount:{
-                        object.put(field.getString(), request.getAmount());
+                        if(request.getAmount() > 0) {
+                            object.put(field.getString(), request.getAmount());
+                        }
                         break;
                     }
                     case PartialAmount: {
-                        object.put(field.getString(), request.getPartialAmount());
+                        if(request.getPartialAmount() > 0) {
+                            object.put(field.getString(), request.getPartialAmount());
+                        }
                         break;
                     }
                     case TipsAmount:{
-                        object.put(field.getString(), request.getTipsAmount());
+                        if(request.getTipsAmount() > 0) {
+                            object.put(field.getString(), request.getTipsAmount());
+                        }
                         break;
                     }
                     case CashbackAmount:{
-                        object.put(field.getString(), request.getCashbackAmount());
+                        if(request.getCashbackAmount() > 0) {
+                            object.put(field.getString(), request.getCashbackAmount());
+                        }
                         break;
                     }
                     case CurrencyCode:{
-                        object.put(field.getString(), String.valueOf(request.getCurrencyCode()));
+                        if(request.getCurrencyCode() > 0) {
+                            object.put(field.getString(), request.getCurrencyCode());
+                        }
                         break;
                     }
                     case RRN:{

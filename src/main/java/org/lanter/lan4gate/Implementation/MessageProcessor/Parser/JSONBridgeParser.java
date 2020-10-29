@@ -22,8 +22,7 @@ public class JSONBridgeParser {
         return result;
     }
     private static IBridge createBridge(int operationCode) {
-        BridgeFactory builder = new BridgeFactory();
-        return builder.getBridge(BridgeCommand.getValue(operationCode));
+        return BridgeFactory.getBridge(BridgeCommand.getValue(operationCode));
     }
 
     private static int getCommand(JSONObject objectField) {

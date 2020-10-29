@@ -1,11 +1,17 @@
 package org.lanter.lan4gate.Implementation.MessageProcessor.Builder;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.lanter.lan4gate.Implementation.MessageProcessor.Fields.RootFields;
+import org.lanter.lan4gate.Implementation.Messages.Response.ArrayStubOperation;
+import org.lanter.lan4gate.Messages.OperationsList;
 import org.lanter.lan4gate.Messages.Response.IResponse;
 import org.lanter.lan4gate.Messages.Response.ResponseFieldsList;
+import org.lanter.lan4gate.Messages.Response.StatusList;
 
+import java.lang.reflect.Array;
+import java.util.HashSet;
 import java.util.Set;
 
 public class JSONResponseBuilder {
@@ -32,41 +38,57 @@ public class JSONResponseBuilder {
                 switch (field)
                 {
                     case EcrNumber:{
-                        object.put(field.getString(), response.getEcrNumber());
+                        if(response.getEcrNumber() > 0) {
+                            object.put(field.getString(), response.getEcrNumber());
+                        }
                         break;
                     }
                     case EcrMerchantNumber:{
-                        object.put(field.getString(), response.getEcrMerchantNumber());
+                        if(response.getEcrMerchantNumber() > 0) {
+                            object.put(field.getString(), response.getEcrMerchantNumber());
+                        }
                         break;
                     }
                     case OperationCode:{
-                        if(response.getOperationCode() != null) {
+                        if(response.getOperationCode() != null && response.getOperationCode() != OperationsList.NoOperation) {
                             object.put(field.getString(), response.getOperationCode().getNumber());
                         }
                         break;
                     }
                     case OriginalOperationCode:
-                        if(response.getOriginalOperationCode() != null) {
+                        if(response.getOriginalOperationCode() != null  && response.getOriginalOperationCode() != OperationsList.NoOperation) {
                             object.put(field.getString(), response.getOriginalOperationCode().getNumber());
                         }
                         break;
                     case TotalAmount:
-                        object.put(field.getString(), response.getTotalAmount());
+                        if(response.getTotalAmount() > 0) {
+                            object.put(field.getString(), response.getTotalAmount());
+                        }
                         break;
                     case PartialAmount:
-                        object.put(field.getString(), response.getPartialAmount());
+                        if(response.getPartialAmount() > 0) {
+                            object.put(field.getString(), response.getPartialAmount());
+                        }
                         break;
                     case AcquirerFeeAmount:
-                        object.put(field.getString(), response.getAcquirerFeeAmount());
+                        if(response.getAcquirerFeeAmount() > 0) {
+                            object.put(field.getString(), response.getAcquirerFeeAmount());
+                        }
                         break;
                     case TerminalFeeAmount:
-                        object.put(field.getString(), response.getTerminalFeeAmount());
+                        if(response.getTerminalFeeAmount() > 0) {
+                            object.put(field.getString(), response.getTerminalFeeAmount());
+                        }
                         break;
                     case TipsAmount:
-                        object.put(field.getString(), response.getTipsAmount());
+                        if(response.getTipsAmount() > 0) {
+                            object.put(field.getString(), response.getTipsAmount());
+                        }
                         break;
                     case CurrencyCode:
-                        object.put(field.getString(), response.getCurrencyCode());
+                        if(response.getCurrencyCode() > 0) {
+                            object.put(field.getString(), response.getCurrencyCode());
+                        }
                         break;
                     case ReceiptReference:
                         object.put(field.getString(), response.getReceiptReference());
@@ -75,10 +97,12 @@ public class JSONResponseBuilder {
                         object.put(field.getString(), response.getRRN());
                         break;
                     case Status:
-                        object.put(field.getString(), response.getStatus().getNumber());
+                        if(response.getStatus() != null && response.getStatus() != StatusList.UnknownError) {
+                            object.put(field.getString(), response.getStatus().getNumber());
+                        }
                         break;
                     case OriginalOperationStatus:
-                        if(response.getOriginalOperationStatus() != null) {
+                        if(response.getOriginalOperationStatus() != null && response.getOriginalOperationStatus() != StatusList.UnknownError) {
                             object.put(field.getString(), response.getOriginalOperationStatus().getNumber());
                         }
                         break;
@@ -173,10 +197,22 @@ public class JSONResponseBuilder {
                         object.put(field.getString(), response.getRefundCount());
                         break;
                     case SalesArray:
+                        JSONArray salesArray = buildArray(response.getSalesArray());
+                        if(salesArray.length() > 0) {
+                            object.put(field.getString(), salesArray);
+                        }
                         break;
                     case VoidArray:
+                        JSONArray voidArray = buildArray(response.getVoidArray());
+                        if(voidArray.length() > 0) {
+                            object.put(field.getString(), voidArray);
+                        }
                         break;
                     case RefundArray:
+                        JSONArray refundArray = buildArray(response.getRefundArray());
+                        if(refundArray.length() > 0) {
+                            object.put(field.getString(), refundArray);
+                        }
                         break;
                     case CardPANHash:
                         object.put(field.getString(), response.getCardPANHash());
@@ -199,7 +235,17 @@ public class JSONResponseBuilder {
                 }
             }
         }
-
-
+    }
+    private static JSONArray buildArray(Set<IResponse> responses) throws JSONException {
+        JSONArray array = new JSONArray();
+        for(IResponse response : responses) {
+            JSONObject object = new JSONObject();
+            IResponse arrayStubOperation = new ArrayStubOperation(response);
+            addObjectFields(object, arrayStubOperation);
+            if(object.length() > 0) {
+                array.put(object);
+            }
+        }
+        return array;
     }
 }

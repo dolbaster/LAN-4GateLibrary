@@ -115,11 +115,10 @@ public class SizeControlProxy implements ICommunication {
     private byte[] getReceiveData(byte[] data, int dataSize) {
         byte[] result = null;
         if(data.length >= dataSize + mSizeCharsCount) {
-            result = Arrays.copyOfRange(data, mSizeCharsCount, dataSize);
+            result = Arrays.copyOfRange(data, mSizeCharsCount, mSizeCharsCount + dataSize);
         }
         return result;
     }
-
     private void sliceStream() {
         byte[] array = mCurrentDataStreamBuffer.toByteArray();
         mCurrentDataStreamBuffer.reset();
