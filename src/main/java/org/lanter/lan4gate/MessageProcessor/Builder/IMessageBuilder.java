@@ -5,8 +5,6 @@ import org.lanter.lan4gate.Messages.Notification.INotification;
 import org.lanter.lan4gate.Messages.Request.IRequest;
 import org.lanter.lan4gate.Messages.Response.IResponse;
 
-import java.nio.ByteBuffer;
-
 /**
  * The interface for building messages
  */
@@ -17,7 +15,7 @@ public interface IMessageBuilder {
      * @param request Filled object {@link IRequest}
      * @return byte array, contains message. In error - array is empty
      */
-    ByteBuffer buildMessage(IRequest request);
+    byte[] buildMessage(IRequest request);
 
     /**
      * Assemble message from {@link IResponse} to byte array
@@ -25,7 +23,7 @@ public interface IMessageBuilder {
      * @param response Filled object {@link IResponse}
      * @return byte array, contains message. In error - array is empty
      */
-    ByteBuffer buildMessage(IResponse response);
+    byte[] buildMessage(IResponse response);
 
     /**
      * Assemble message from {@link INotification} to byte array
@@ -33,7 +31,7 @@ public interface IMessageBuilder {
      * @param notification Filled object {@link INotification}
      * @return byte array, contains message. In error - array is empty
      */
-    ByteBuffer buildMessage(INotification notification);
+    byte[] buildMessage(INotification notification);
 
     /**
      * Assemble message from {@link IBridge} to byte array
@@ -41,5 +39,5 @@ public interface IMessageBuilder {
      * @param bridge Filled object {@link IBridge}
      * @return byte array, contains message. In error - array is empty
      */
-    ByteBuffer buildMessage(IBridge bridge);
+    byte[] buildMessage(IBridge bridge);
 }

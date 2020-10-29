@@ -5,7 +5,6 @@ import android.util.Base64;
 import org.json.JSONObject;
 import org.lanter.lan4gate.Messages.Bridge.*;
 
-import java.nio.ByteBuffer;
 import java.util.Set;
 
 public class JSONBridgeParser {

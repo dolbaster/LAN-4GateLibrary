@@ -4,15 +4,15 @@ import org.lanter.lan4gate.Communication.ICommunication;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 public class SizeControlProxy implements ICommunication {
 
     private final ByteArrayOutputStream mCurrentDataStreamBuffer = new ByteArrayOutputStream();
-    private final Queue<ByteBuffer> mReceivedData = new ConcurrentLinkedDeque<>();
+    private final Queue<byte[]> mReceivedData = new ConcurrentLinkedDeque<>();
 
     private int mMessageSize = -1;
     private final int mSizeCharsCount = 4;
@@ -56,30 +56,30 @@ public class SizeControlProxy implements ICommunication {
     }
 
     @Override
-    public void sendData(ByteBuffer data) throws IOException {
-        if(mCommunication != null && data != null && data.limit() > 0) {
+    public void sendData(byte[] data) throws IOException {
+        if(mCommunication != null && data != null && data.length > 0) {
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             stream.write(getSendSize(data).getBytes());
-            stream.write(data.array());
+            stream.write(data);
             byte[] arr = stream.toByteArray();
-            ByteBuffer buf = ByteBuffer.wrap(arr, 0, mSizeCharsCount + data.limit()).slice();
+            byte[] buf = Arrays.copyOfRange(arr, 0, mSizeCharsCount + data.length);
             mCommunication.sendData(buf);
         }
     }
 
     @Override
-    public ByteBuffer getData() throws IOException {
+    public byte[] getData() throws IOException {
         if(mCommunication != null) {
-            ByteBuffer buffer = mCommunication.getData();
+            byte[] buffer = mCommunication.getData();
             if(buffer != null) {
-                mCurrentDataStreamBuffer.write(buffer.array(), 0, buffer.limit());
+                mCurrentDataStreamBuffer.write(buffer, 0, buffer.length);
             }
             if(mCurrentDataStreamBuffer.size() > 0) {
                 if(mMessageSize < 0) {
                     mMessageSize = getReceiveSize(mCurrentDataStreamBuffer.toByteArray());
                 }
                 if (mMessageSize > 0) {
-                    ByteBuffer message = getReceiveData(mCurrentDataStreamBuffer.toByteArray(), mMessageSize);
+                    byte[] message = getReceiveData(mCurrentDataStreamBuffer.toByteArray(), mMessageSize);
                     if(message != null) {
                         mReceivedData.offer(message);
                         sliceStream();
@@ -98,24 +98,24 @@ public class SizeControlProxy implements ICommunication {
         }
     }
 
-    private String getSendSize(ByteBuffer buffer) {
-        return String.format("%0" + mSizeCharsCount +"X", buffer.limit());
+    private String getSendSize(byte[] buffer) {
+        return String.format("%0" + mSizeCharsCount +"X", buffer.length);
     }
 
     private int getReceiveSize(byte[] buffer) {
         int result = -1;
         if(buffer.length >= mSizeCharsCount) {
-            String size = StandardCharsets.UTF_8.decode(ByteBuffer.wrap(buffer, 0, mSizeCharsCount)).toString();
+            String size = new String(buffer, 0, mSizeCharsCount, StandardCharsets.UTF_8);
             if(size.matches("[0-9a-fA-F]{" + mSizeCharsCount + "}")) {
                 result = Integer.parseInt(size, 16);
             }
         }
         return result;
     }
-    private ByteBuffer getReceiveData(byte[] data, int dataSize) {
-        ByteBuffer result = null;
+    private byte[] getReceiveData(byte[] data, int dataSize) {
+        byte[] result = null;
         if(data.length >= dataSize + mSizeCharsCount) {
-            result = ByteBuffer.wrap(data, mSizeCharsCount, dataSize).slice();
+            result = Arrays.copyOfRange(data, mSizeCharsCount, dataSize);
         }
         return result;
     }

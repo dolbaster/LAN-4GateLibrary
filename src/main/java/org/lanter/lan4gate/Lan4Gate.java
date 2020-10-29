@@ -2,7 +2,6 @@ package org.lanter.lan4gate;
 
 import org.lanter.lan4gate.Communication.ICommunication;
 import org.lanter.lan4gate.Implementation.Communication.SingleConnectionTCPServer;
-import org.lanter.lan4gate.Managers.BridgeManagerFactory;
 import org.lanter.lan4gate.Managers.IBridgeManager;
 import org.lanter.lan4gate.MessageProcessor.Builder.IMessageBuilder;
 import org.lanter.lan4gate.MessageProcessor.Builder.MessageBuilderFactory;
@@ -11,14 +10,12 @@ import org.lanter.lan4gate.MessageProcessor.Parser.MessageParserFactory;
 import org.lanter.lan4gate.Messages.Bridge.IBridge;
 import org.lanter.lan4gate.Messages.Notification.INotification;
 import org.lanter.lan4gate.Messages.OperationsList;
-import org.lanter.lan4gate.Implementation.Messages.Requests.Request;
 import org.lanter.lan4gate.Messages.Request.IRequest;
 import org.lanter.lan4gate.Messages.Request.RequestFactory;
 import org.lanter.lan4gate.Messages.Response.IResponse;
 import org.lanter.lan4gate.Messages.Response.ResponseFactory;
 
 import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
 import java.util.Set;
@@ -257,7 +254,7 @@ public class Lan4Gate implements Runnable {
 
     public void sendResponse(IResponse response) {
         IMessageBuilder builder = MessageBuilderFactory.getBuilder();
-        ByteBuffer result = builder.buildMessage(response);
+        byte[] result = builder.buildMessage(response);
         if(result != null) {
             try {
                 mCommunication.sendData(result);
@@ -271,7 +268,7 @@ public class Lan4Gate implements Runnable {
      */
     public void sendRequest(IRequest request){
         IMessageBuilder builder = MessageBuilderFactory.getBuilder();
-        ByteBuffer result = builder.buildMessage(request);
+        byte[] result = builder.buildMessage(request);
         if(result != null) {
             try {
                 mCommunication.sendData(result);
@@ -281,7 +278,7 @@ public class Lan4Gate implements Runnable {
 
     public void sendNotification(INotification notification) {
         IMessageBuilder builder = MessageBuilderFactory.getBuilder();
-        ByteBuffer result = builder.buildMessage(notification);
+        byte[] result = builder.buildMessage(notification);
         if(result != null) {
             try {
                 mCommunication.sendData(result);
@@ -289,9 +286,9 @@ public class Lan4Gate implements Runnable {
         }
     }
 
-    private void newData(ByteBuffer data) {
+    private void newData(byte[] data) {
         if(data != null) {
-            String convertedData = StandardCharsets.UTF_8.decode(data).toString();
+            String convertedData = new String(data, StandardCharsets.UTF_8);
 
             IMessageParser parser = MessageParserFactory.getParser();
 

@@ -1,7 +1,6 @@
 package org.lanter.lan4gate.Communication;
 
 import java.io.IOException;
-import java.nio.ByteBuffer;
 
 /**
  * The interface Communication.
@@ -32,14 +31,14 @@ public interface ICommunication {
      *
      * @param data the data
      */
-    void sendData(ByteBuffer data) throws IOException;
+    void sendData(byte[] data) throws IOException;
 
     /**
      * Gets data.
      *
      * @return the data
      */
-    ByteBuffer getData() throws IOException;
+    byte[] getData() throws IOException;
 
     /**
      * Do communication.

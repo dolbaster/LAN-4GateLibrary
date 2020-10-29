@@ -14,8 +14,8 @@ public class SingleConnectionTCPServer implements ICommunication {
     private ServerSocketChannel mServerChannel;
     private Selector mConnectionSelector;
     private SelectionKey mRegisteredConnection = null;
-    private final Queue<ByteBuffer> mDataForSend = new ConcurrentLinkedQueue<>();
-    private final Queue<ByteBuffer> mReceivedData = new ConcurrentLinkedQueue<>();
+    private final Queue<byte[]> mDataForSend = new ConcurrentLinkedQueue<>();
+    private final Queue<byte[]> mReceivedData = new ConcurrentLinkedQueue<>();
     private int mPort = 20501;
 
     @Override
@@ -34,12 +34,12 @@ public class SingleConnectionTCPServer implements ICommunication {
     public int getPort() { return mPort; }
 
     @Override
-    public void sendData(ByteBuffer data) {
+    public void sendData(byte[] data) {
         mDataForSend.add(data);
     }
 
     @Override
-    public ByteBuffer getData() {
+    public byte[] getData() {
         return mReceivedData.poll();
     }
 
@@ -147,14 +147,14 @@ public class SingleConnectionTCPServer implements ICommunication {
             closeConnection(key);
         }
     }
-    private void sendData(SelectionKey key, ByteBuffer buffer) throws IOException {
+    private void sendData(SelectionKey key, byte[] buffer) throws IOException {
         if(buffer != null && key != null)
         {
-            ((SocketChannel) key.channel()).write(buffer);
+            ((SocketChannel) key.channel()).write(ByteBuffer.wrap(buffer));
         }
     }
-    private ByteBuffer extractData() throws IOException {
-        ByteBuffer buffer = mDataForSend.peek();
+    private byte[] extractData() throws IOException {
+        byte[] buffer = mDataForSend.peek();
         mDataForSend.poll();
         return buffer;
     }
@@ -198,7 +198,7 @@ public class SingleConnectionTCPServer implements ICommunication {
             bytes = channel.read(buf);
         }
         if(bytes  != -1) {
-            mReceivedData.offer(ByteBuffer.wrap(outputStream.toByteArray()));
+            mReceivedData.offer(outputStream.toByteArray());
         } else {
             closeClientConnection(key);
         }
