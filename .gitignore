@@ -1,7 +1,5 @@
 .idea/*
 .gradle/*
-gradle/*
 build/*
-gradlew*
 settings.gradle
 /local.properties
